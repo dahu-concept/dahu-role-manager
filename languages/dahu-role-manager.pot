@@ -1,0 +1,381 @@
+# Copyright (C) 2026 Hugo Vial-Jaime
+# This file is distributed under the MIT licence.
+msgid ""
+msgstr ""
+"Project-Id-Version: Dahu Role Manager\n"
+"Report-Msgid-Bugs-To: https://dahu-concept.fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2026-10-08 09:36+0000\n"
+"X-Domain: dahu-role-manager\n"
+
+#. translators: %s: the bolded label 'Add a "Log out" button'. */
+#: includes/settings.php:399
+msgid "%s at the very bottom of the admin menu for this role, so they can log out even with no admin bar"
+msgstr ""
+
+#. translators: %s: the bolded label "Hide the admin bar entirely". */
+#: includes/settings.php:384
+msgid "%s for this role (takes precedence over the selection below)"
+msgstr ""
+
+#. translators: %s: the bolded label "Lock editing once the order is Completed". */
+#: includes/settings.php:481
+msgid "%s for this role: as soon as an order is completed, its \"Order details\" panel becomes read-only (status, customer, creation date, addresses, payment method). Until it is completed, nothing changes."
+msgstr ""
+
+#. translators: %s: number of users holding the role. */
+#: includes/roles.php:627
+msgid "%s user is assigned to this role: reassign them before it can be deleted."
+msgid_plural "%s users are assigned to this role: reassign them before it can be deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/settings.php:547
+msgid "(WooCommerce built-in, always on)"
+msgstr ""
+
+#: includes/roles.php:325
+msgid "A role with the identifier \"%s\" already exists."
+msgstr ""
+
+#: includes/settings.php:508
+msgid "Accounts this role may edit"
+msgstr ""
+
+#: includes/roles.php:581
+msgid "Actions"
+msgstr ""
+
+#: includes/settings.php:400
+msgid "Add a \"Log out\" button"
+msgstr ""
+
+#: includes/settings.php:374
+msgid "Admin bar"
+msgstr ""
+
+#: includes/settings.php:521
+msgid "Allow"
+msgstr ""
+
+#: dahu-role-manager.php:96
+msgid "By Hugo Vial-Jaime — Dahu-Concept"
+msgstr ""
+
+#. translators: %s: the display name of the role being configured. */
+#: includes/settings.php:513
+msgid "By default WooCommerce lets the shop manager edit accounts holding the Customer role and no other. Tick here the account roles %s may view, edit, create and delete."
+msgstr ""
+
+#: includes/roles.php:649
+msgid "Cannot delete \"%1$s\": %2$s user(s) are still assigned to it. Reassign them first."
+msgstr ""
+
+#: includes/roles.php:580
+msgid "Capabilities"
+msgstr ""
+
+#: includes/settings.php:337 includes/settings.php:408
+msgid "Check / uncheck all"
+msgstr ""
+
+#: includes/roles.php:486
+msgid "Create a role by duplication"
+msgstr ""
+
+#: includes/roles.php:558
+msgid "Create the role"
+msgstr ""
+
+#: includes/roles.php:327
+msgid "Creating the role \"%s\" failed."
+msgstr ""
+
+#: includes/settings.php:225 includes/settings.php:287
+msgid "Dahu Role Manager decides what each WordPress role sees of the back-office: which menus, which admin-bar items, which screen it lands on, and which accounts it may edit."
+msgstr ""
+
+#: includes/settings.php:317
+msgid "Dashboard (default)"
+msgstr ""
+
+#: includes/roles.php:619
+msgid "Delete"
+msgstr ""
+
+#: includes/roles.php:330
+msgid "Deletion refused: users are still assigned to the role \"%s\". Reassign them first."
+msgstr ""
+
+#: includes/roles.php:526 includes/roles.php:577
+msgid "Display name"
+msgstr ""
+
+#: includes/roles.php:316
+msgid "Display name of role \"%s\" updated."
+msgstr ""
+
+#: includes/roles.php:459
+msgid "Download the CSV"
+msgstr ""
+
+#: includes/roles.php:563
+msgid "Existing roles"
+msgstr ""
+
+#: includes/roles.php:383
+msgid "Export / Import"
+msgstr ""
+
+#: includes/roles.php:443
+msgid "Export / import the settings"
+msgstr ""
+
+#: includes/roles.php:455
+msgid "Export the settings"
+msgstr ""
+
+#: includes/roles.php:551
+msgid "Final once the role is created."
+msgstr ""
+
+#. translators: %s: the bolded warning "Final once the role is created." */
+#: includes/roles.php:550
+msgid "Generated from the display name, and editable by hand. Lowercase letters, digits and underscores only, no spaces. %s"
+msgstr ""
+
+#: includes/settings.php:385
+msgid "Hide the admin bar entirely"
+msgstr ""
+
+#: includes/settings.php:493
+msgid "Hiding back-office elements"
+msgstr ""
+
+#: includes/roles.php:542 includes/roles.php:578
+msgid "Identifier"
+msgstr ""
+
+#: includes/roles.php:418
+msgid "Import complete. The settings were replaced by the contents of the CSV file."
+msgstr ""
+
+#: includes/roles.php:463
+msgid "Import settings"
+msgstr ""
+
+#: includes/roles.php:469
+msgid "Import the CSV"
+msgstr ""
+
+#: includes/roles.php:421
+msgid "Invalid file format. The expected header is: role,type,value"
+msgstr ""
+
+#: includes/roles.php:321
+msgid "Invalid identifier: lowercase letters, digits and underscores only, no spaces."
+msgstr ""
+
+#: includes/roles.php:319
+msgid "Invalid source role (the Administrator role cannot be duplicated)."
+msgstr ""
+
+#: includes/settings.php:313
+msgid "Land on"
+msgstr ""
+
+#: includes/settings.php:482
+msgid "Lock editing once the order is Completed"
+msgstr ""
+
+#: includes/hiding.php:402
+msgid "Log out"
+msgstr ""
+
+#: includes/settings.php:333
+msgid "Menus"
+msgstr ""
+
+#: includes/roles.php:419
+msgid "No file was received."
+msgstr ""
+
+#: includes/roles.php:652
+msgid "No user is assigned to it. This cannot be undone."
+msgstr ""
+
+#. translators: 1: an example CSS selector, 2: another example CSS selector, 3: the CSS declaration display:none. */
+#: includes/settings.php:498
+msgid "One CSS selector per line (for example %1$s or %2$s). These elements are hidden (%3$s) throughout the back-office for this role — handy for the persistent notices third-party plugins leave behind."
+msgstr ""
+
+#. translators: %s: the bolded words "display name". */
+#: includes/roles.php:568
+msgid "Only the %s can be changed after creation: the identifier is final, because WordPress offers no way to change it without recreating the role and reassigning all of its users. A role can only be deleted once no user holds it."
+msgstr ""
+
+#. translators: 1: order number, 2: the bolded order status "Completed". */
+#: includes/order-lock.php:193
+msgid "Order #%1$s is %2$s: its status is locked for your role and was not changed."
+msgstr ""
+
+#: includes/order-lock.php:195
+msgctxt "Order status"
+msgid "Completed"
+msgstr ""
+
+#: includes/settings.php:471
+msgid "Orders (WooCommerce)"
+msgstr ""
+
+#: includes/roles.php:651
+msgid "Permanently delete the role \"%1$s\" (%2$s)?"
+msgstr ""
+
+#: dahu-role-manager.php:101
+msgid "Plugin website"
+msgstr ""
+
+#: includes/roles.php:601
+msgid "Protected role"
+msgstr ""
+
+#: includes/roles.php:600
+msgid "Protected role (WordPress built-in)"
+msgstr ""
+
+#: includes/roles.php:610
+msgid "Rename"
+msgstr ""
+
+#: includes/settings.php:522
+msgid "Role"
+msgstr ""
+
+#: includes/roles.php:314
+msgid "Role \"%s\" created with the source role's capabilities."
+msgstr ""
+
+#: includes/roles.php:318
+msgid "Role \"%s\" deleted."
+msgstr ""
+
+#: includes/roles.php:381
+msgid "Role interface"
+msgstr ""
+
+#: includes/roles.php:382
+msgid "Role management"
+msgstr ""
+
+#: includes/settings.php:18 includes/settings.php:19 includes/settings.php:224 includes/settings.php:286
+msgid "Role manager"
+msgstr ""
+
+#: includes/settings.php:296
+msgid "Role to configure:"
+msgstr ""
+
+#: includes/settings.php:556
+msgid "Save the settings for this role"
+msgstr ""
+
+#: dahu-role-manager.php:70
+msgid "Settings"
+msgstr ""
+
+#: includes/roles.php:359
+msgid "Settings saved for this role."
+msgstr ""
+
+#: includes/roles.php:511
+msgid "Source role"
+msgstr ""
+
+#: includes/roles.php:420
+msgid "That file could not be read."
+msgstr ""
+
+#. translators: %s: the bolded name of the Administrator role. */
+#: includes/roles.php:500
+msgid "The %s role is deliberately not offered as a source: a role copied from it would hold every capability on the site with nothing to stop it."
+msgstr ""
+
+#. translators: %s: the CSV column header role,type,value. */
+#: includes/roles.php:448
+msgid "The CSV file (%s) covers the whole configuration: menus, submenus, admin bar, the per-role options, the landing page, the hidden CSS selectors and the editable accounts."
+msgstr ""
+
+#: includes/roles.php:320
+msgid "The display name is required."
+msgstr ""
+
+#: includes/roles.php:323
+msgid "The identifier \"%s\" is reserved by WordPress and cannot be used."
+msgstr ""
+
+#. translators: %s: an example role display name. */
+#: includes/roles.php:534
+msgid "The label shown throughout the admin (for example %s)."
+msgstr ""
+
+#. translators: %s: the bolded word "exactly". */
+#: includes/roles.php:491
+msgid "The new role receives %s the capabilities of the source role, with nothing added and nothing taken away. Adjust them afterwards with whatever role editor you already use."
+msgstr ""
+
+#: includes/settings.php:314
+msgid "The page this role sees right after logging in, instead of the dashboard. Useful when the dashboard is hidden from their menu below."
+msgstr ""
+
+#: includes/roles.php:328
+msgid "This role is protected: it can be neither renamed nor deleted from this tab."
+msgstr ""
+
+#: includes/roles.php:579
+msgid "Users"
+msgstr ""
+
+#. translators: %s: plugin version number. */
+#: dahu-role-manager.php:90
+msgid "Version %s"
+msgstr ""
+
+#: includes/roles.php:535
+msgid "Warehouse staff"
+msgstr ""
+
+#: includes/settings.php:67
+msgid "You are not allowed to change these settings."
+msgstr ""
+
+#: includes/csv.php:54
+msgid "You are not allowed to export these settings."
+msgstr ""
+
+#: includes/csv.php:294
+msgid "You are not allowed to import these settings."
+msgstr ""
+
+#: includes/roles.php:133 includes/roles.php:213 includes/roles.php:259
+msgid "You are not allowed to manage roles."
+msgstr ""
+
+#: includes/roles.php:569
+msgid "display name"
+msgstr ""
+
+#: includes/roles.php:492
+msgid "exactly"
+msgstr ""
+
+#: includes/roles.php:464
+msgid "⚠️ An import completely replaces the current settings of every role."
+msgstr ""
+
+#: includes/settings.php:489
+msgid "⚠️ Ticking this applies the lock to you as well: no administrator will be able to change the status of a completed order any more. You can always untick it again from this page."
+msgstr ""
+

@@ -1,0 +1,307 @@
+/*
+ * ------------------------------------------------------------------------
+ * SHARED ADMIN TOKENS
+ * ------------------------------------------------------------------------
+ *
+ * This block is identical in every Dahu plugin, deliberately. The plugins
+ * are independent — each has to work with none of the others installed — so
+ * they cannot share a stylesheet, and the only way for their screens to
+ * look like one family is for each to declare the same tokens under the
+ * same names. A shop running three of them sees one interface rather than
+ * three.
+ *
+ * Values follow WordPress's own admin palette rather than inventing a
+ * brand: a plugin screen that ignores the admin it lives in reads as a
+ * foreign object, however well designed it is on its own.
+ *
+ * The `--dahu-admin-` prefix is what makes a declaration on :root safe
+ * here. Two plugins declaring it write the same values, so neither can
+ * surprise the other, and nothing outside the family can collide with it.
+ *
+ * Single source of truth: /Dev/dahu-public/UI-ADMIN-DAHU.md
+ */
+
+:root {
+	/* Surfaces */
+	--dahu-admin-surface: #fff;
+	--dahu-admin-surface-sunken: #f6f7f7;
+	--dahu-admin-border: #dcdcde;
+	--dahu-admin-border-strong: #c3c4c7;
+
+	/* Text */
+	--dahu-admin-text: #1d2327;
+	--dahu-admin-text-muted: #646970;
+
+	/* Intent */
+	--dahu-admin-accent: #2271b1;
+	--dahu-admin-accent-text: #fff;
+	--dahu-admin-success: #008a20;
+	--dahu-admin-warning: #b32d2e;
+	--dahu-admin-caution: #996800;
+	--dahu-admin-neutral: #50575e;
+
+	/* Shape */
+	--dahu-admin-radius: 4px;
+	--dahu-admin-radius-lg: 6px;
+	--dahu-admin-shadow: 0 1px 2px rgba( 0, 0, 0, .06 );
+	--dahu-admin-shadow-lg: 0 6px 20px rgba( 0, 0, 0, .16 );
+
+	/* Rhythm */
+	--dahu-admin-gap: 8px;
+	--dahu-admin-gap-lg: 14px;
+
+	/* Reading widths */
+	--dahu-admin-measure: 900px;
+	--dahu-admin-measure-wide: 1100px;
+
+	/* Motion. Short, and switched off below for anybody who asked. */
+	--dahu-admin-transition: .15s ease;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+
+	:root {
+		--dahu-admin-transition: 0s;
+	}
+}
+
+/* ------------------------------------------------------------------------
+ * The settings screen
+ * ------------------------------------------------------------------------
+ *
+ * This file replaced 38 inline `style=` attributes. The point is not
+ * tidiness: an inline style cannot follow the admin colour scheme the shop
+ * chose, cannot be overridden by anybody, and does not show up when somebody
+ * reads the CSS to find out why a screen looks wrong.
+ *
+ * It also surfaced two real mistakes the inline styles were hiding — see
+ * .dahu-rm-warning and .dahu-rm-slug below.
+ */
+
+/* --- The one-line introduction under the page title ------------------- */
+
+/*
+ * Every Dahu screen carries one, and it is the same rule everywhere. A lede
+ * that runs the full width of a 1920px screen is not read; the reading measure
+ * is what makes it a sentence rather than a banner.
+ *
+ * This replaces the version number that used to sit in the H1. A version is
+ * useful about once a quarter and was printed on the one line nobody can
+ * avoid reading; it lives on the Plugins screen, which exists for that.
+ */
+.dahu-rm-intro {
+	max-width: var( --dahu-admin-measure );
+	margin: 0 0 var( --dahu-admin-gap-lg );
+	color: var( --dahu-admin-text-muted );
+	font-size: 14px;
+}
+
+.dahu-rm-tabs,
+.dahu-rm-tools {
+	margin-bottom: 1.5em;
+}
+
+/*
+ * The role chooser decides what every control below it means, and it read like
+ * a minor field in a line of prose. It gets a bar of its own: same surface as a
+ * card header, so the eye stops there before going down the page.
+ */
+.dahu-rm-filter {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var( --dahu-admin-gap );
+	max-width: var( --dahu-admin-measure );
+	margin-bottom: var( --dahu-admin-gap-lg );
+	padding: var( --dahu-admin-gap ) var( --dahu-admin-gap-lg );
+	background: var( --dahu-admin-surface-sunken );
+	border: 1px solid var( --dahu-admin-border );
+	border-radius: var( --dahu-admin-radius );
+}
+
+.dahu-rm-tools {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2em;
+}
+
+.dahu-rm-rule {
+	margin: 2em 0;
+}
+
+/* ---------- The node grid ----------
+ *
+ * A menu or admin-bar listing runs to dozens of entries, each with its own
+ * children. In one column it is a page of scrolling; in three it is a page.
+ *
+ * `break-inside: avoid` on the card is what keeps an entry and its children
+ * together: without it a column break lands between a parent and its
+ * submenus, and the submenus appear to belong to the entry above them.
+ */
+
+.dahu-rm-grid {
+	columns: 3;
+	column-gap: 1.5em;
+	max-width: 1400px;
+	margin-bottom: 2em;
+}
+
+@media ( max-width: 1200px ) {
+
+	.dahu-rm-grid {
+		columns: 1;
+	}
+}
+
+.dahu-rm-card {
+	break-inside: avoid;
+	margin: 0 0 .8em;
+	padding: .6em .8em;
+	background: var( --dahu-admin-surface );
+	border: 1px solid var( --dahu-admin-border );
+	border-radius: var( --dahu-admin-radius );
+}
+
+/*
+ * The top-level menu gets a band of its own, bled to the card's edges. Without
+ * it a card is a flat list in which the parent and its twelve submenus carry
+ * the same weight, and the grid reads as one wall of sixty checkboxes instead
+ * of as menus with their contents. The band is the cheapest possible
+ * hierarchy: one background and one rule.
+ */
+.dahu-rm-card__label {
+	display: block;
+	margin: -.6em -.8em .5em;
+	padding: .5em .8em;
+	background: var( --dahu-admin-surface-sunken );
+	border-bottom: 1px solid var( --dahu-admin-border );
+	border-radius: var( --dahu-admin-radius ) var( --dahu-admin-radius ) 0 0;
+	font-weight: 600;
+}
+
+/*
+ * A menu with no submenus: no band, because a band with nothing under it is a
+ * header for an empty section. The card goes back to being a plain row.
+ */
+.dahu-rm-card__label:only-child {
+	margin-bottom: -.6em;
+	border-bottom: 0;
+	border-radius: var( --dahu-admin-radius );
+}
+
+.dahu-rm-card__child {
+	display: block;
+	margin: .3em 0 0 1.6em;
+}
+
+/* ---------- Text ---------- */
+
+/*
+ * A technical identifier beside its label.
+ *
+ * Grey TEXT, not `opacity: .6` — which is what the inline styles used, and
+ * what makes two identifiers look different from one screen to the next.
+ * Opacity applies to everything in the element, including its borders and
+ * any icon, and it compounds with whatever opacity an ancestor already has;
+ * a colour does neither.
+ */
+/*
+ * A slug is there to be looked up, not read. It keeps the monospace so it can
+ * be recognised as a literal, loses the chip background that made it compete
+ * with the label it belongs to, and is allowed to break anywhere — a slug like
+ * `edit.php?post_type=product&taxonomy=product_cat` otherwise sets the width of
+ * its row and leaves the rows around it ragged.
+ */
+.dahu-rm-slug {
+	padding: 0;
+	background: none;
+	font-size: .85em;
+	color: var( --dahu-admin-text-muted );
+	overflow-wrap: anywhere;
+}
+
+.dahu-rm-hint {
+	color: var( --dahu-admin-text-muted );
+}
+
+.dahu-rm-hint--tight {
+	margin-top: .2em;
+}
+
+/*
+ * A sentence announcing a LOSS.
+ *
+ * The inline styles rendered "an import completely replaces the settings of
+ * every role" in the same grey as an ordinary hint — the most consequential
+ * sentence on the screen, styled as an aside. Warning red, because that is
+ * what the colour is for.
+ */
+.dahu-rm-warning {
+	margin: 0 0 .5em;
+	color: var( --dahu-admin-warning );
+}
+
+.dahu-rm-danger {
+	margin: .4em 0 0;
+	font-size: .9em;
+	color: var( --dahu-admin-warning );
+}
+
+/* ---------- Widths ----------
+ *
+ * Reading widths as tokens rather than numbers written out: a form and a
+ * table on neighbouring screens of two different plugins should not be two
+ * different widths for no reason anybody can name.
+ */
+
+.dahu-rm-form,
+.dahu-rm-table {
+	max-width: var( --dahu-admin-measure );
+}
+
+.dahu-rm-table {
+	margin-bottom: 1em;
+}
+
+.dahu-rm-table--wide {
+	max-width: var( --dahu-admin-measure-wide );
+}
+
+.dahu-rm-textarea {
+	width: 100%;
+	max-width: var( --dahu-admin-measure );
+	font-family: monospace;
+}
+
+.dahu-rm-col-check {
+	width: 40px;
+}
+
+.dahu-rm-col-id {
+	width: 220px;
+}
+
+.dahu-rm-col-count {
+	width: 100px;
+}
+
+.dahu-rm-col-actions {
+	width: 340px;
+}
+
+/* ---------- Inline forms in a table cell ---------- */
+
+.dahu-rm-inline-form {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	margin-right: var( --dahu-admin-gap );
+}
+
+.dahu-rm-inline-form--bare {
+	display: inline;
+}
+
+.dahu-rm-rename-input {
+	width: 150px;
+}
