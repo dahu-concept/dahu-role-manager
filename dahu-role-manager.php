@@ -105,3 +105,90 @@ add_filter(
 	10,
 	2
 );
+
+/*
+ * The welcome screen, shown once just after activation.
+ *
+ * Registered here rather than inside the admin include, because the
+ * activation flag has to be set whatever else is loaded.
+ */
+require_once DAHU_ROLE_MANAGER_PATH . 'includes/dahu-welcome.php';
+
+/*
+ * The flag, not a redirect: an activation hook that redirects breaks bulk
+ * activation and WP-CLI, which activate several plugins in one request. The
+ * welcome screen reads the flag on the next page load, where a redirect is
+ * safe, and clears it when several plugins were activated together.
+ */
+register_activation_hook(
+	__FILE__,
+	static function () {
+		Dahu_Welcome::mark_activated( 'dahu-role-manager' );
+	}
+);
+
+add_action(
+	'init',
+	static function () {
+		Dahu_Welcome::register(
+			array(
+				'slug'       => 'dahu-role-manager',
+				'name'       => __( 'Role manager', 'dahu-role-manager' ),
+				'tagline'    => __( 'Who can do what, and what changed since last time.', 'dahu-role-manager' ),
+				'file'       => DAHU_ROLE_MANAGER_FILE,
+				'version'    => DAHU_ROLE_MANAGER_VERSION,
+				'textdomain' => 'dahu-role-manager',
+				/*
+				 * Les mots de l'accueil viennent d'ici : le fichier partagé est
+				 * recopié dans toute la famille et ne peut donc porter aucun
+				 * domaine de traduction.
+				 */
+				'strings'    => array(
+					'next'   => __( 'Next', 'dahu-role-manager' ),
+					'done'   => __( 'Done', 'dahu-role-manager' ),
+					'skip'   => __( 'Skip', 'dahu-role-manager' ),
+					'of'     => __( 'of', 'dahu-role-manager' ),
+					'denied' => __( 'You are not allowed to view this page.', 'dahu-role-manager' ),
+				),
+				/*
+				 * The one-time tour, on the main screen (Settings > Role manager).
+				 * Every target is rendered whatever the shop holds: the role
+				 * selector and the tab bar sit outside any condition, and the
+				 * tab bar is built from a fixed list.
+				 */
+				'tour_screen' => 'settings_page_dahu-role-manager',
+				'tour'        => array(
+					array(
+						'selector' => '#dahu_role',
+						'title'    => __( 'Pick a role', 'dahu-role-manager' ),
+						'text'     => __( 'Everything below applies to the role chosen here.', 'dahu-role-manager' ),
+					),
+					array(
+						'selector' => '.dahu-rm-tabs a[href*="tab=roles"]',
+						'title'    => __( 'Manage the roles', 'dahu-role-manager' ),
+						'text'     => __( 'Create, rename or delete a role.', 'dahu-role-manager' ),
+					),
+					array(
+						'selector' => '.dahu-rm-tabs a[href*="tab=csv"]',
+						'title'    => __( 'Export and import', 'dahu-role-manager' ),
+						'text'     => __( 'Copy every setting to another shop with a CSV file.', 'dahu-role-manager' ),
+					),
+				),
+				'points'     => array(
+				array(
+					'title' => __( 'Roles, plainly', 'dahu-role-manager' ),
+					'text'  => __( 'Create, rename and retire roles without a developer.', 'dahu-role-manager' ),
+				),
+				array(
+					'title' => __( 'Capabilities, readably', 'dahu-role-manager' ),
+					'text'  => __( 'What each role may do, in one screen.', 'dahu-role-manager' ),
+				),
+				array(
+					'title' => __( 'A record', 'dahu-role-manager' ),
+					'text'  => __( 'Every change is logged with who made it.', 'dahu-role-manager' ),
+				),
+				),
+			)
+		);
+	}
+);

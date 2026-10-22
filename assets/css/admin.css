@@ -78,24 +78,6 @@
  * .dahu-rm-warning and .dahu-rm-slug below.
  */
 
-/* --- The one-line introduction under the page title ------------------- */
-
-/*
- * Every Dahu screen carries one, and it is the same rule everywhere. A lede
- * that runs the full width of a 1920px screen is not read; the reading measure
- * is what makes it a sentence rather than a banner.
- *
- * This replaces the version number that used to sit in the H1. A version is
- * useful about once a quarter and was printed on the one line nobody can
- * avoid reading; it lives on the Plugins screen, which exists for that.
- */
-.dahu-rm-intro {
-	max-width: var( --dahu-admin-measure );
-	margin: 0 0 var( --dahu-admin-gap-lg );
-	color: var( --dahu-admin-text-muted );
-	font-size: 14px;
-}
-
 .dahu-rm-tabs,
 .dahu-rm-tools {
 	margin-bottom: 1.5em;
@@ -123,10 +105,6 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 2em;
-}
-
-.dahu-rm-rule {
-	margin: 2em 0;
 }
 
 /* ---------- The node grid ----------

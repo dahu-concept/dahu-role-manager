@@ -41,10 +41,23 @@ function dahu_role_manager_enqueue_admin_style($hook) {
         return;
     }
 
+    // The family sheet first, and its own second: the plugin's own rules
+    // are written to sit on top of the shared components, so the order is
+    // a dependency and not a hope. One handle across the family -- the
+    // file is byte-identical everywhere, so whichever plugin loads it
+    // first serves all of them, and a shop with six of these installed
+    // downloads one copy.
+    wp_enqueue_style(
+    	'dahu-ui',
+    	DAHU_ROLE_MANAGER_URL . 'assets/css/dahu-ui.css',
+    	array(),
+    	DAHU_ROLE_MANAGER_VERSION
+    );
+
     wp_enqueue_style(
         'dahu-role-manager-admin',
         DAHU_ROLE_MANAGER_URL . 'assets/css/admin.css',
-        array(),
+        array( 'dahu-ui' ),
         DAHU_ROLE_MANAGER_VERSION
     );
 }
@@ -220,9 +233,11 @@ function dahu_role_manager_settings_page() {
 
     if ($tab === 'roles' || $tab === 'csv') {
         ?>
-        <div class="wrap">
-            <h1><?php esc_html_e('Role manager', 'dahu-role-manager'); ?></h1>
-            <p class="dahu-rm-intro"><?php esc_html_e('Dahu Role Manager decides what each WordPress role sees of the back-office: which menus, which admin-bar items, which screen it lands on, and which accounts it may edit.', 'dahu-role-manager'); ?></p>
+        <div class="wrap dahu-ui">
+            <div class="dahu-ui-head">
+				<h1 class="dahu-ui-head__title"><?php esc_html_e('Role manager', 'dahu-role-manager'); ?></h1>
+				<p class="dahu-ui-head__sub"><?php esc_html_e('Who can do what, and what changed since last time.', 'dahu-role-manager'); ?></p>
+			</div>
             <hr class="wp-header-end">
             <?php dahu_role_manager_render_tabs_nav($tab); ?>
             <?php if ($tab === 'roles'): ?>
@@ -283,9 +298,11 @@ function dahu_role_manager_settings_page() {
     $role_can_manage_accounts = dahu_role_manager_role_can_manage_accounts($selected_role);
 
     ?>
-    <div class="wrap">
-        <h1><?php esc_html_e('Role manager', 'dahu-role-manager'); ?></h1>
-            <p class="dahu-rm-intro"><?php esc_html_e('Dahu Role Manager decides what each WordPress role sees of the back-office: which menus, which admin-bar items, which screen it lands on, and which accounts it may edit.', 'dahu-role-manager'); ?></p>
+    <div class="wrap dahu-ui">
+        <div class="dahu-ui-head">
+				<h1 class="dahu-ui-head__title"><?php esc_html_e('Role manager', 'dahu-role-manager'); ?></h1>
+				<p class="dahu-ui-head__sub"><?php esc_html_e('Who can do what, and what changed since last time.', 'dahu-role-manager'); ?></p>
+			</div>
             <hr class="wp-header-end">
         <?php dahu_role_manager_render_tabs_nav($tab); ?>
 
@@ -312,7 +329,8 @@ function dahu_role_manager_settings_page() {
             <?php wp_nonce_field('dahu_role_manager_save_role_settings'); ?>
 
             <?php if ($selected_role !== 'administrator'): ?>
-            <h2><?php esc_html_e('Land on', 'dahu-role-manager'); ?></h2>
+            <div class="dahu-ui-card">
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Land on', 'dahu-role-manager'); ?></h2></div>
             <p><?php esc_html_e('The page this role sees right after logging in, instead of the dashboard. Useful when the dashboard is hidden from their menu below.', 'dahu-role-manager'); ?></p>
             <p>
                 <select name="<?php echo esc_attr(DAHU_ROLE_MANAGER_OPTION); ?>[<?php echo esc_attr($selected_role); ?>][start_menu]">
@@ -331,8 +349,10 @@ function dahu_role_manager_settings_page() {
                     <?php endforeach; ?>
                 </select>
             </p>
+            </div>
 
-            <h2><?php esc_html_e('Menus', 'dahu-role-manager'); ?></h2>
+            <div class="dahu-ui-card">
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Menus', 'dahu-role-manager'); ?></h2></div>
             <p>
                 <label>
                     <input type="checkbox" onclick="dahuRoleManagerToggleAll(this,'dahu-role-manager-menus-columns')" />
@@ -368,12 +388,14 @@ function dahu_role_manager_settings_page() {
                     </div>
                 <?php endforeach; ?>
             </div>
+            </div>
             <?php endif; ?>
 
             <?php // Open to EVERY role, administrator included: hiding the
                   // admin bar removes no capability and stays reversible from
                   // the sidebar, which is never touched for the administrator. ?>
-            <h2><?php esc_html_e('Admin bar', 'dahu-role-manager'); ?></h2>
+            <div class="dahu-ui-card">
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Admin bar', 'dahu-role-manager'); ?></h2></div>
             <p>
                 <label>
                     <input type="checkbox"
@@ -467,10 +489,12 @@ function dahu_role_manager_settings_page() {
                     </div>
                 <?php endforeach; ?>
             </div>
+            </div>
 
             <?php // Open to EVERY role, administrator included: this option
                   // restricts no access. ?>
-            <h2><?php esc_html_e('Orders (WooCommerce)', 'dahu-role-manager'); ?></h2>
+            <div class="dahu-ui-card">
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Orders (WooCommerce)', 'dahu-role-manager'); ?></h2></div>
             <p>
                 <label>
                     <input type="checkbox"
@@ -491,8 +515,10 @@ function dahu_role_manager_settings_page() {
                     <?php esc_html_e( '⚠️ Ticking this applies the lock to you as well: no administrator will be able to change the status of a completed order any more. You can always untick it again from this page.', 'dahu-role-manager' ); ?>
                 </p>
             <?php endif; ?>
+            </div>
 
-            <h2><?php esc_html_e('Hiding back-office elements', 'dahu-role-manager'); ?></h2>
+            <div class="dahu-ui-card">
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Hiding back-office elements', 'dahu-role-manager'); ?></h2></div>
             <p>
                 <?php
                 printf(
@@ -505,9 +531,11 @@ function dahu_role_manager_settings_page() {
                 ?>
             </p>
             <textarea name="<?php echo esc_attr(DAHU_ROLE_MANAGER_OPTION); ?>[<?php echo esc_attr($selected_role); ?>][hide_classes]" rows="6" cols="80" class="dahu-rm-textarea" placeholder=".notice.notice-warning&#10;#mon-plugin-notice"><?php echo esc_textarea($hide_classes_text); ?></textarea>
+            </div>
 
             <?php if ($role_can_manage_accounts && $selected_role !== 'administrator'): ?>
-            <h2><?php esc_html_e('Accounts this role may edit', 'dahu-role-manager'); ?></h2>
+            <div class="dahu-ui-card">
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Accounts this role may edit', 'dahu-role-manager'); ?></h2></div>
             <p>
                 <?php
                 printf(
@@ -553,6 +581,7 @@ function dahu_role_manager_settings_page() {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            </div>
             <?php endif; ?>
 
             <?php submit_button(__('Save the settings for this role', 'dahu-role-manager')); ?>

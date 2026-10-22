@@ -440,7 +440,8 @@ function dahu_role_manager_render_csv_import_notices() {
  */
 function dahu_role_manager_render_csv_tab() {
     ?>
-    <h2><?php esc_html_e('Export / import the settings', 'dahu-role-manager'); ?></h2>
+    <div class="dahu-ui-card">
+    <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Export / import the settings', 'dahu-role-manager'); ?></h2></div>
     <p>
         <?php
         printf(
@@ -470,6 +471,7 @@ function dahu_role_manager_render_csv_tab() {
             </form>
         </div>
     </div>
+    </div>
     <?php
 }
 
@@ -483,7 +485,8 @@ function dahu_role_manager_render_roles_tab() {
     $all_roles = $wp_roles->roles;
     $reserved = dahu_role_manager_get_reserved_role_slugs();
     ?>
-    <h2><?php esc_html_e('Create a role by duplication', 'dahu-role-manager'); ?></h2>
+    <div class="dahu-ui-card">
+    <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Create a role by duplication', 'dahu-role-manager'); ?></h2></div>
     <p>
         <?php
         printf(
@@ -557,10 +560,10 @@ function dahu_role_manager_render_roles_tab() {
         </table>
         <?php submit_button(__('Create the role', 'dahu-role-manager')); ?>
     </form>
+    </div>
 
-    <hr class="dahu-rm-rule" />
-
-    <h2><?php esc_html_e('Existing roles', 'dahu-role-manager'); ?></h2>
+    <div class="dahu-ui-card">
+    <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Existing roles', 'dahu-role-manager'); ?></h2></div>
     <p class="dahu-rm-hint">
         <?php
         printf(
@@ -607,7 +610,7 @@ function dahu_role_manager_render_roles_tab() {
                                 <input type="hidden" name="dahu_role_slug" value="<?php echo esc_attr($slug); ?>" />
                                 <?php wp_nonce_field('dahu_role_manager_rename_role'); ?>
                                 <input type="text" name="dahu_role_label" value="<?php echo esc_attr(translate_user_role($info['name'])); ?>" required class="dahu-rm-rename-input" />
-                                <button type="submit" class="button button-secondary"><?php esc_html_e('Rename', 'dahu-role-manager'); ?></button>
+                                <button type="submit" class="dahu-ui-btn"><?php esc_html_e('Rename', 'dahu-role-manager'); ?></button>
                             </form>
                             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="dahu-rm-inline-form--bare"
                                   onsubmit="return dahuRoleManagerConfirmDelete(this);">
@@ -616,7 +619,7 @@ function dahu_role_manager_render_roles_tab() {
                                 <input type="hidden" name="dahu_role_users" value="<?php echo esc_attr($user_count); ?>" />
                                 <input type="hidden" name="dahu_role_name" value="<?php echo esc_attr(translate_user_role($info['name'])); ?>" />
                                 <?php wp_nonce_field('dahu_role_manager_delete_role'); ?>
-                                <button type="submit" class="button button-link-delete" <?php disabled($user_count > 0); ?>><?php esc_html_e('Delete', 'dahu-role-manager'); ?></button>
+                                <button type="submit" class="dahu-ui-btn dahu-ui-btn--warn" <?php disabled($user_count > 0); ?>><?php esc_html_e('Delete', 'dahu-role-manager'); ?></button>
                             </form>
                             <?php if ($user_count > 0): ?>
                                 <p class="dahu-rm-danger">
@@ -642,6 +645,7 @@ function dahu_role_manager_render_roles_tab() {
             <?php endforeach; ?>
         </tbody>
     </table>
+    </div>
 
     <script>
     var dahuRoleManagerI18n = <?php echo wp_json_encode(array(
