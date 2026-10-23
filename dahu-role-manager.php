@@ -3,7 +3,7 @@
  * Plugin Name:       Dahu Role Manager
  * Plugin URI:        https://dahu-concept.fr
  * Description:       Shapes the admin for each role: which menus, submenus and admin-bar items they see, which accounts they may edit, where they land on login. Duplicate, rename and delete roles, and export the whole thing as CSV.
- * Version:           3.0.0
+ * Version:           3.2.1
  * Author:            Hugo Vial-Jaime
  * Author URI:        mailto:contact@dahu-concept.fr
  * License:           MIT
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'DAHU_ROLE_MANAGER_VERSION', '3.0.0' );
+define( 'DAHU_ROLE_MANAGER_VERSION', '3.2.1' );
 define( 'DAHU_ROLE_MANAGER_FILE', __FILE__ );
 define( 'DAHU_ROLE_MANAGER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DAHU_ROLE_MANAGER_URL', plugin_dir_url( __FILE__ ) );
@@ -49,6 +49,7 @@ add_action(
  * plain WordPress install, and that module checks for WooCommerce itself.
  * ---------------------------------------------------------------------- */
 
+require_once DAHU_ROLE_MANAGER_PATH . 'includes/role-store.php';
 require_once DAHU_ROLE_MANAGER_PATH . 'includes/discovery.php';
 require_once DAHU_ROLE_MANAGER_PATH . 'includes/hiding.php';
 require_once DAHU_ROLE_MANAGER_PATH . 'includes/order-lock.php';
@@ -138,10 +139,19 @@ add_action(
 				'file'       => DAHU_ROLE_MANAGER_FILE,
 				'version'    => DAHU_ROLE_MANAGER_VERSION,
 				'textdomain' => 'dahu-role-manager',
+				'mark'       => array(
+					'view'  => '0 0 112 112',
+					'paths' => array(
+						'M23.0 30.0 a17.0 17.0 0 1 0 34.0 0 a17.0 17.0 0 1 0 -34.0 0',
+						'M14 76 Q14 53 40 53 Q66 53 66 76',
+						'M62.0 92.0 a12.0 12.0 0 1 0 24.0 0 a12.0 12.0 0 1 0 -24.0 0',
+						'M85 92 L110 92 M101 92 L101 102 M92 92 L92 100',
+					),
+				),
 				/*
-				 * Les mots de l'accueil viennent d'ici : le fichier partagé est
-				 * recopié dans toute la famille et ne peut donc porter aucun
-				 * domaine de traduction.
+				 * The welcome screen's words come from here: the shared file is
+				 * copied byte for byte across the whole family, so it can carry
+				 * no text domain of its own.
 				 */
 				'strings'    => array(
 					'next'   => __( 'Next', 'dahu-role-manager' ),

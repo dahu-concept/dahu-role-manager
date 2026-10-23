@@ -28,6 +28,15 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
 delete_option( 'dahu_role_manager_settings' );
 
+// The welcome screen's own three flags. They are interface state, not the
+// shop's data: `includes/dahu-welcome.php` writes them with update_option(),
+// so they outlive the plugin unless they are deleted here, and a reinstall
+// would never greet anybody again — the screen and the guided tour staying
+// silent for good, with nothing on screen to explain why.
+delete_option( 'dahu_welcome_seen_dahu-role-manager' );
+delete_option( 'dahu_welcome_pending_dahu-role-manager' );
+delete_option( 'dahu_welcome_tour_dahu-role-manager' );
+
 // Per-user transients carrying the "status is locked" notice. Short-lived
 // anyway, but there is no reason to leave them behind.
 global $wpdb;
@@ -58,6 +67,9 @@ if ( is_multisite() ) {
 		switch_to_blog( $site_id );
 
 		delete_option( 'dahu_role_manager_settings' );
+		delete_option( 'dahu_welcome_seen_dahu-role-manager' );
+		delete_option( 'dahu_welcome_pending_dahu-role-manager' );
+		delete_option( 'dahu_welcome_tour_dahu-role-manager' );
 
 		$wpdb->query(
 			$wpdb->prepare(

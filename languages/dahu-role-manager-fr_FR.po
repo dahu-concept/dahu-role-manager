@@ -6,443 +6,459 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr_FR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"PO-Revision-Date: 2026-10-21 10:19+0000\n"
+"PO-Revision-Date: 2026-10-23 11:19+0000\n"
 "X-Generator: dahu i18n-build\n"
 
 #. translators: %s: the bolded label 'Add a "Log out" button'. */
-#: \includes\settings.php:423
+#: includes/settings.php:442
 msgid "%s at the very bottom of the admin menu for this role, so they can log out even with no admin bar"
 msgstr "%s tout en bas du menu d’administration pour ce rôle, afin qu’il puisse se déconnecter même sans barre d’administration"
 
 #. translators: %s: the bolded label "Hide the admin bar entirely". */
-#: \includes\settings.php:408
+#: includes/settings.php:427
 msgid "%s for this role (takes precedence over the selection below)"
 msgstr "%s pour ce rôle (prioritaire sur la sélection ci-dessous)"
 
 #. translators: %s: the bolded label "Lock editing once the order is Completed". */
-#: \includes\settings.php:507
+#: includes/settings.php:530
 msgid "%s for this role: as soon as an order is completed, its \"Order details\" panel becomes read-only (status, customer, creation date, addresses, payment method). Until it is completed, nothing changes."
 msgstr "%s pour ce rôle : dès qu’une commande est terminée, son panneau « Détails de la commande » passe en lecture seule (statut, client, date de création, adresses, moyen de paiement). Tant qu’elle n’est pas terminée, rien ne change."
 
 #. translators: %s: number of users holding the role. */
-#: \includes\roles.php:630
+#: includes/roles.php:721
 msgid "%s user is assigned to this role: reassign them before it can be deleted."
 msgid_plural "%s users are assigned to this role: reassign them before it can be deleted."
 msgstr[0] "%s utilisateur porte ce rôle : réaffectez-le avant de pouvoir le supprimer."
 msgstr[1] "%s utilisateurs portent ce rôle : réaffectez-les avant de pouvoir le supprimer."
 
-#: \includes\settings.php:577
+#: includes/settings.php:600
 msgid "(WooCommerce built-in, always on)"
 msgstr "(intégré à WooCommerce, toujours actif)"
 
-#: \dahu-role-manager.php:187
+#: dahu-role-manager.php:197
 msgid "A record"
 msgstr "Une trace"
 
-#: \includes\roles.php:325
+#: includes/roles.php:411
 msgid "A role with the identifier \"%s\" already exists."
 msgstr "Un rôle portant l’identifiant « %s » existe déjà."
 
-#: \includes\settings.php:538
+#: includes/settings.php:561
 msgid "Accounts this role may edit"
 msgstr "Comptes que ce rôle peut modifier"
 
-#: \includes\roles.php:584
+#: includes/roles.php:675
 msgid "Actions"
 msgstr "Actions"
 
-#: \includes\settings.php:424
+#: includes/settings.php:443
 msgid "Add a \"Log out\" button"
 msgstr "Ajouter un bouton « Se déconnecter »"
 
-#: \includes\settings.php:398
+#: includes/settings.php:417
 msgid "Admin bar"
 msgstr "Barre d’administration"
 
-#: \includes\settings.php:551
+#: includes/settings.php:574
 msgid "Allow"
 msgstr "Autoriser"
 
-#: \dahu-role-manager.php:96
+#: dahu-role-manager.php:97
 msgid "By Hugo Vial-Jaime — Dahu-Concept"
 msgstr "Par Hugo Vial-Jaime — Dahu-Concept"
 
 #. translators: %s: the display name of the role being configured. */
-#: \includes\settings.php:543
+#: includes/settings.php:566
 msgid "By default WooCommerce lets the shop manager edit accounts holding the Customer role and no other. Tick here the account roles %s may view, edit, create and delete."
 msgstr "Par défaut, WooCommerce ne laisse le responsable de boutique modifier que les comptes portant le rôle Client. Cochez ici les rôles de compte que %s peut voir, modifier, créer et supprimer."
 
-#: \includes\roles.php:653
+#: includes/roles.php:744
 msgid "Cannot delete \"%1$s\": %2$s user(s) are still assigned to it. Reassign them first."
 msgstr "Impossible de supprimer « %1$s » : %2$s utilisateur(s) le portent encore. Réaffectez-les d’abord."
 
-#: \includes\roles.php:583
+#: includes/roles.php:674
 msgid "Capabilities"
 msgstr "Capacités"
 
-#: \dahu-role-manager.php:183
+#: dahu-role-manager.php:193
 msgid "Capabilities, readably"
 msgstr "Les capacités, lisiblement"
 
-#: \includes\settings.php:359 \includes\settings.php:432
+#: includes/settings.php:377 includes/settings.php:454
 msgid "Check / uncheck all"
 msgstr "Tout cocher / décocher"
 
-#: \dahu-role-manager.php:174
+#: dahu-role-manager.php:184
 msgid "Copy every setting to another shop with a CSV file."
 msgstr "Copiez tous les réglages vers une autre boutique avec un fichier CSV."
 
-#: \includes\roles.php:489
+#: includes/roles.php:580
 msgid "Create a role by duplication"
 msgstr "Créer un rôle par duplication"
 
-#: \includes\roles.php:561
+#: includes/roles.php:652
 msgid "Create the role"
 msgstr "Créer le rôle"
 
-#: \dahu-role-manager.php:180
+#: dahu-role-manager.php:190
 msgid "Create, rename and retire roles without a developer."
 msgstr "Créer, renommer et retirer des rôles sans développeur."
 
-#: \dahu-role-manager.php:169
+#: dahu-role-manager.php:179
 msgid "Create, rename or delete a role."
 msgstr "Créez, renommez ou supprimez un rôle."
 
-#: \includes\roles.php:327
+#: includes/roles.php:413
 msgid "Creating the role \"%s\" failed."
 msgstr "La création du rôle « %s » a échoué."
 
-#: \includes\settings.php:337
+#: includes/settings.php:352
 msgid "Dashboard (default)"
 msgstr "Tableau de bord (par défaut)"
 
-#: \includes\roles.php:622
+#: includes/roles.php:713
 msgid "Delete"
 msgstr "Supprimer"
 
-#: \includes\roles.php:330
+#: includes/roles.php:421
 msgid "Deletion refused: users are still assigned to the role \"%s\". Reassign them first."
 msgstr "Suppression refusée : des utilisateurs portent encore le rôle « %s ». Réaffectez-les d’abord."
 
-#: \includes\roles.php:529 \includes\roles.php:580
+#: includes/roles.php:620 includes/roles.php:671
 msgid "Display name"
 msgstr "Nom affiché"
 
-#: \includes\roles.php:316
+#: includes/roles.php:402
 msgid "Display name of role \"%s\" updated."
 msgstr "Nom affiché du rôle « %s » mis à jour."
 
-#: \dahu-role-manager.php:148
+#: dahu-role-manager.php:158
 msgid "Done"
 msgstr "Terminé"
 
-#: \includes\roles.php:460
+#: includes/roles.php:551
 msgid "Download the CSV"
 msgstr "Télécharger le CSV"
 
-#: \dahu-role-manager.php:188
+#: dahu-role-manager.php:198
 msgid "Every change is logged with who made it."
 msgstr "Chaque changement est journalisé avec son auteur."
 
-#: \dahu-role-manager.php:164
+#: dahu-role-manager.php:174
 msgid "Everything below applies to the role chosen here."
 msgstr "Tout ce qui suit s'applique au rôle choisi ici."
 
-#: \includes\roles.php:566
+#: includes/roles.php:657
 msgid "Existing roles"
 msgstr "Rôles existants"
 
-#: \includes\roles.php:383
+#: includes/roles.php:474
 msgid "Export / Import"
 msgstr "Export / Import"
 
-#: \includes\roles.php:444
+#: includes/roles.php:535
 msgid "Export / import the settings"
 msgstr "Exporter / importer les réglages"
 
-#: \dahu-role-manager.php:173
+#: dahu-role-manager.php:183
 msgid "Export and import"
 msgstr "Export et import"
 
-#: \includes\roles.php:456
+#: includes/roles.php:547
 msgid "Export the settings"
 msgstr "Exporter les réglages"
 
-#: \includes\roles.php:554
+#: includes/roles.php:645
 msgid "Final once the role is created."
 msgstr "Définitif une fois le rôle créé."
 
 #. translators: %s: the bolded warning "Final once the role is created." */
-#: \includes\roles.php:553
+#: includes/roles.php:644
 msgid "Generated from the display name, and editable by hand. Lowercase letters, digits and underscores only, no spaces. %s"
 msgstr "Généré à partir du nom affiché, et modifiable à la main. Lettres minuscules, chiffres et tirets bas uniquement, pas d’espaces. %s"
 
-#: \includes\settings.php:409
+#: includes/settings.php:428
 msgid "Hide the admin bar entirely"
 msgstr "Masquer entièrement la barre d’administration"
 
-#: \includes\settings.php:521
+#: includes/settings.php:544
 msgid "Hiding back-office elements"
 msgstr "Masquage d’éléments du back-office"
 
-#: \includes\roles.php:545 \includes\roles.php:581
+#: includes/roles.php:636 includes/roles.php:672
 msgid "Identifier"
 msgstr "Identifiant"
 
-#: \includes\roles.php:418
+#: includes/roles.php:509
 msgid "Import complete. The settings were replaced by the contents of the CSV file."
 msgstr "Import terminé. Les réglages ont été remplacés par le contenu du fichier CSV."
 
-#: \includes\roles.php:464
+#: includes/roles.php:555
 msgid "Import settings"
 msgstr "Importer des réglages"
 
-#: \includes\roles.php:470
+#: includes/roles.php:561
 msgid "Import the CSV"
 msgstr "Importer le CSV"
 
-#: \includes\roles.php:421
+#: includes/roles.php:512
 msgid "Invalid file format. The expected header is: role,type,value"
 msgstr "Format de fichier invalide. L’en-tête attendu est : role,type,value"
 
-#: \includes\roles.php:321
+#: includes/roles.php:407
 msgid "Invalid identifier: lowercase letters, digits and underscores only, no spaces."
 msgstr "Identifiant invalide : lettres minuscules, chiffres et tirets bas uniquement, pas d’espaces."
 
-#: \includes\roles.php:319
+#: includes/roles.php:405
 msgid "Invalid source role (the Administrator role cannot be duplicated)."
 msgstr "Rôle source invalide (le rôle Administrateur ne peut pas être dupliqué)."
 
-#: \includes\settings.php:333
+#: includes/settings.php:348
 msgid "Land on"
 msgstr "Arrivée"
 
-#: \includes\settings.php:508
+#: includes/settings.php:531
 msgid "Lock editing once the order is Completed"
 msgstr "Verrouiller la modification dès que la commande est Terminée"
 
-#: \includes\hiding.php:402
+#: includes/hiding.php:402
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: \dahu-role-manager.php:168
+#: dahu-role-manager.php:178
 msgid "Manage the roles"
 msgstr "Gérez les rôles"
 
-#: \includes\settings.php:355
+#: includes/settings.php:370
 msgid "Menus"
 msgstr "Menus"
 
-#: \dahu-role-manager.php:147
+#: dahu-role-manager.php:157
 msgid "Next"
 msgstr "Suivant"
 
-#: \includes\roles.php:419
+#: includes/roles.php:510
 msgid "No file was received."
 msgstr "Aucun fichier n’a été reçu."
 
-#: \includes\roles.php:656
+#: includes/roles.php:747
 msgid "No user is assigned to it. This cannot be undone."
 msgstr "Aucun utilisateur ne le porte. Cette action est irréversible."
 
 #. translators: 1: an example CSS selector, 2: another example CSS selector, 3: the CSS declaration display:none. */
-#: \includes\settings.php:526
+#: includes/settings.php:549
 msgid "One CSS selector per line (for example %1$s or %2$s). These elements are hidden (%3$s) throughout the back-office for this role — handy for the persistent notices third-party plugins leave behind."
 msgstr "Un sélecteur CSS par ligne (par exemple %1$s ou %2$s). Ces éléments sont masqués (%3$s) dans tout le back-office pour ce rôle — pratique pour les notices persistantes que laissent les extensions tierces."
 
 #. translators: %s: the bolded words "display name". */
-#: \includes\roles.php:571
+#: includes/roles.php:662
 msgid "Only the %s can be changed after creation: the identifier is final, because WordPress offers no way to change it without recreating the role and reassigning all of its users. A role can only be deleted once no user holds it."
 msgstr "Seul le %s peut être modifié après la création : l’identifiant est définitif, parce que WordPress n’offre aucun moyen de le changer sans recréer le rôle et réaffecter tous ses utilisateurs. Un rôle ne peut être supprimé qu’une fois qu’aucun utilisateur ne le porte."
 
 #. translators: 1: order number, 2: the bolded order status "Completed". */
-#: \includes\order-lock.php:193
+#: includes/order-lock.php:193
 msgid "Order #%1$s is %2$s: its status is locked for your role and was not changed."
 msgstr "La commande n° %1$s est %2$s : son statut est verrouillé pour votre rôle et n’a pas été modifié."
 
-#: \includes\order-lock.php:195
+#: includes/order-lock.php:195
 msgctxt "Order status"
 msgid "Completed"
 msgstr "Terminée"
 
-#: \includes\settings.php:497
+#: includes/settings.php:520
 msgid "Orders (WooCommerce)"
 msgstr "Commandes (WooCommerce)"
 
-#: \includes\roles.php:655
+#: includes/roles.php:746
 msgid "Permanently delete the role \"%1$s\" (%2$s)?"
 msgstr "Supprimer définitivement le rôle « %1$s » (%2$s) ?"
 
-#: \dahu-role-manager.php:163
+#: dahu-role-manager.php:173
 msgid "Pick a role"
 msgstr "Choisissez un rôle"
 
-#: \dahu-role-manager.php:101
+#: dahu-role-manager.php:102
 msgid "Plugin website"
 msgstr "Site de l’extension"
 
-#: \includes\roles.php:604
+#: includes/roles.php:695
 msgid "Protected role"
 msgstr "Rôle protégé"
 
-#: \includes\roles.php:603
+#: includes/roles.php:694
 msgid "Protected role (WordPress built-in)"
 msgstr "Rôle protégé (intégré à WordPress)"
 
-#: \includes\roles.php:613
+#: includes/roles.php:418
+msgid "Refused: the roles could not be read from the database, so nothing was written — that way no role is erased. Try again, and if it persists, have the roles option checked."
+msgstr "Refusé : les rôles n’ont pas pu être lus en base, rien n’a donc été écrit — ainsi aucun rôle n’est effacé. Réessayez, et si cela persiste, faites vérifier l’option des rôles."
+
+#: includes/roles.php:704
 msgid "Rename"
 msgstr "Renommer"
 
-#: \includes\settings.php:552
+#: includes/settings.php:575
 msgid "Role"
 msgstr "Rôle"
 
-#: \includes\roles.php:314
+#: includes/roles.php:400
 msgid "Role \"%s\" created with the source role's capabilities."
 msgstr "Rôle « %s » créé avec les capacités du rôle source."
 
-#: \includes\roles.php:318
+#: includes/roles.php:404
 msgid "Role \"%s\" deleted."
 msgstr "Rôle « %s » supprimé."
 
-#: \includes\roles.php:381
+#: includes/roles.php:472
 msgid "Role interface"
 msgstr "Interface du rôle"
 
-#: \includes\roles.php:382
+#: includes/roles.php:473
 msgid "Role management"
 msgstr "Gestion des rôles"
 
-#: \dahu-role-manager.php:136 \includes\settings.php:18 \includes\settings.php:19 \includes\settings.php:238 \includes\settings.php:303
+#: dahu-role-manager.php:137 includes/settings.php:18 includes/settings.php:19 includes/settings.php:253 includes/settings.php:318
 msgid "Role manager"
 msgstr "Gestion des rôles"
 
-#: \includes\settings.php:315
+#: includes/settings.php:330
 msgid "Role to configure:"
 msgstr "Rôle à configurer :"
 
-#: \dahu-role-manager.php:179
+#: dahu-role-manager.php:189
 msgid "Roles, plainly"
 msgstr "Les rôles, simplement"
 
-#: \includes\settings.php:587
+#: includes/settings.php:610
 msgid "Save the settings for this role"
 msgstr "Enregistrer les réglages de ce rôle"
 
-#: \dahu-role-manager.php:70
+#: dahu-role-manager.php:71
 msgid "Settings"
 msgstr "Réglages"
 
-#: \includes\roles.php:359
+#: includes/roles.php:450
 msgid "Settings saved for this role."
 msgstr "Réglages enregistrés pour ce rôle."
 
-#: \dahu-role-manager.php:149
+#: dahu-role-manager.php:159
 msgid "Skip"
 msgstr "Passer"
 
-#: \includes\roles.php:514
+#: includes/roles.php:605
 msgid "Source role"
 msgstr "Rôle source"
 
-#: \includes\roles.php:420
+#: includes/roles.php:511
 msgid "That file could not be read."
 msgstr "Ce fichier n’a pas pu être lu."
 
 #. translators: %s: the bolded name of the Administrator role. */
-#: \includes\roles.php:503
+#: includes/roles.php:594
 msgid "The %s role is deliberately not offered as a source: a role copied from it would hold every capability on the site with nothing to stop it."
 msgstr "Le rôle %s n’est délibérément pas proposé comme source : un rôle copié depuis lui détiendrait toutes les capacités du site sans rien pour l’arrêter."
 
 #. translators: %s: the CSV column header role,type,value. */
-#: \includes\roles.php:449
+#: includes/roles.php:540
 msgid "The CSV file (%s) covers the whole configuration: menus, submenus, admin bar, the per-role options, the landing page, the hidden CSS selectors and the editable accounts."
 msgstr "Le fichier CSV (%s) couvre toute la configuration : menus, sous-menus, barre d’administration, options par rôle, page d’arrivée, sélecteurs CSS masqués et comptes modifiables."
 
-#: \includes\roles.php:320
+#: includes/settings.php:449
+msgid "The admin bar was not readable on this page load, so there is nothing to choose from here."
+msgstr "La barre d'administration n'a pas pu être lue au chargement de cette page : il n'y a donc rien à choisir ici."
+
+#: includes/settings.php:372
+msgid "The admin menu was not readable on this page load, so there is nothing to choose from here."
+msgstr "Le menu d'administration n'a pas pu être lu au chargement de cette page : il n'y a donc rien à choisir ici."
+
+#: includes/roles.php:406
 msgid "The display name is required."
 msgstr "Le nom affiché est obligatoire."
 
-#: \includes\roles.php:323
+#: includes/roles.php:409
 msgid "The identifier \"%s\" is reserved by WordPress and cannot be used."
 msgstr "L’identifiant « %s » est réservé par WordPress et ne peut pas être utilisé."
 
 #. translators: %s: an example role display name. */
-#: \includes\roles.php:537
+#: includes/roles.php:628
 msgid "The label shown throughout the admin (for example %s)."
 msgstr "Le libellé affiché dans toute l’administration (par exemple %s)."
 
 #. translators: %s: the bolded word "exactly". */
-#: \includes\roles.php:494
+#: includes/roles.php:585
 msgid "The new role receives %s the capabilities of the source role, with nothing added and nothing taken away. Adjust them afterwards with whatever role editor you already use."
 msgstr "Le nouveau rôle reçoit %s les capacités du rôle source, sans rien en plus ni rien en moins. Ajustez-les ensuite avec l’éditeur de rôles que vous employez déjà."
 
-#: \includes\settings.php:334
+#: includes/settings.php:349
 msgid "The page this role sees right after logging in, instead of the dashboard. Useful when the dashboard is hidden from their menu below."
 msgstr "La page que ce rôle voit juste après la connexion, à la place du tableau de bord. Utile quand le tableau de bord est masqué dans son menu ci-dessous."
 
-#: \includes\roles.php:328
+#: includes/roles.php:419
+msgid "The role \"%s\" is no longer in the database. The screen has been refreshed."
+msgstr "Le rôle « %s » n’est plus en base. L’écran a été rafraîchi."
+
+#: includes/roles.php:414
 msgid "This role is protected: it can be neither renamed nor deleted from this tab."
 msgstr "Ce rôle est protégé : il ne peut être ni renommé ni supprimé depuis cet onglet."
 
-#: \includes\roles.php:582
+#: includes/roles.php:673
 msgid "Users"
 msgstr "Utilisateurs"
 
 #. translators: %s: plugin version number. */
-#: \dahu-role-manager.php:90
+#: dahu-role-manager.php:91
 msgid "Version %s"
 msgstr "Version %s"
 
-#: \includes\roles.php:538
+#: includes/roles.php:629
 msgid "Warehouse staff"
 msgstr "Personnel d’entrepôt"
 
-#: \dahu-role-manager.php:184
+#: dahu-role-manager.php:194
 msgid "What each role may do, in one screen."
 msgstr "Ce que chaque rôle peut faire, en un écran."
 
-#: \dahu-role-manager.php:137 \includes\settings.php:239 \includes\settings.php:304
+#: dahu-role-manager.php:138 includes/settings.php:254 includes/settings.php:319
 msgid "Who can do what, and what changed since last time."
 msgstr "Qui peut quoi, et ce qui a changé depuis la dernière fois."
 
-#: \includes\settings.php:80
+#: includes/settings.php:80
 msgid "You are not allowed to change these settings."
 msgstr "Vous n’avez pas l’autorisation de modifier ces réglages."
 
-#: \includes\csv.php:54
+#: includes/csv.php:54
 msgid "You are not allowed to export these settings."
 msgstr "Vous n’avez pas l’autorisation d’exporter ces réglages."
 
-#: \includes\csv.php:294
+#: includes/csv.php:294
 msgid "You are not allowed to import these settings."
 msgstr "Vous n’avez pas l’autorisation d’importer ces réglages."
 
-#: \includes\roles.php:133 \includes\roles.php:213 \includes\roles.php:259
+#: includes/roles.php:133 includes/roles.php:229 includes/roles.php:290
 msgid "You are not allowed to manage roles."
 msgstr "Vous n’avez pas l’autorisation de gérer les rôles."
 
-#: \dahu-role-manager.php:151
+#: dahu-role-manager.php:161
 msgid "You are not allowed to view this page."
 msgstr "Vous n’avez pas l’autorisation de voir cette page."
 
-#: \includes\roles.php:572
+#: includes/roles.php:663
 msgid "display name"
 msgstr "nom affiché"
 
-#: \includes\roles.php:495
+#: includes/roles.php:586
 msgid "exactly"
 msgstr "exactement"
 
-#: \dahu-role-manager.php:150
+#: dahu-role-manager.php:160
 msgid "of"
 msgstr "sur"
 
-#: \includes\roles.php:465
+#: includes/roles.php:556
 msgid "⚠️ An import completely replaces the current settings of every role."
 msgstr "⚠️ Un import remplace intégralement les réglages actuels de tous les rôles."
 
-#: \includes\settings.php:515
+#: includes/settings.php:538
 msgid "⚠️ Ticking this applies the lock to you as well: no administrator will be able to change the status of a completed order any more. You can always untick it again from this page."
 msgstr "⚠️ Cocher cette case vous applique aussi le verrou : plus aucun administrateur ne pourra changer le statut d’une commande terminée. Vous pourrez toujours la décocher depuis cette page."
 

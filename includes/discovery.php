@@ -29,6 +29,13 @@ defined( 'ABSPATH' ) || exit;
  * Capabilities are only ever added, never removed, and only to roles that
  * already exist. Nothing happens unless the filter returns something.
  *
+ * This runs on `init`, so on every request. `WP_Role::add_cap()` rewrites the
+ * WHOLE roles option from the copy held in memory, which itself comes from the
+ * object cache: a stale copy would erase the roles missing from it. And the
+ * capability missing from that copy may well be granted in the database
+ * already. So nothing is written before the database itself has been read —
+ * and when the copy lacks nothing, not even that read happens.
+ *
  * @return void
  */
 function dahu_role_manager_grant_extra_caps() {
@@ -44,6 +51,9 @@ function dahu_role_manager_grant_extra_caps() {
 		return;
 	}
 
+	// First pass, on the copy in memory only: no query, no write.
+	$candidates = array();
+
 	foreach ( $extra as $role_slug => $caps ) {
 
 		if ( ! is_string( $role_slug ) || ! is_array( $caps ) ) {
@@ -57,6 +67,68 @@ function dahu_role_manager_grant_extra_caps() {
 
 		foreach ( $caps as $cap ) {
 			if ( is_string( $cap ) && '' !== $cap && ! $role->has_cap( $cap ) ) {
+				$candidates[ $role_slug ][] = $cap;
+			}
+		}
+	}
+
+	// Nothing missing from the copy: the common case, and it costs nothing.
+	if ( empty( $candidates ) ) {
+		return;
+	}
+
+	// Second pass, against the database: a capability already granted there
+	// means the copy in memory is the thing that is wrong.
+	$db_roles = dahu_role_manager_read_roles_db();
+	$missing  = array();
+
+	foreach ( $candidates as $role_slug => $caps ) {
+		foreach ( $caps as $cap ) {
+			if ( ! dahu_role_manager_db_role_has_cap( $db_roles, $role_slug, $cap ) ) {
+				$missing[ $role_slug ][] = $cap;
+			}
+		}
+	}
+
+	if ( empty( $missing ) ) {
+		// The database is already right. Refresh the copy, write nothing.
+		dahu_role_manager_purge_roles_cache();
+		dahu_role_manager_log_role_action(
+			'extra_caps_skip',
+			implode( ',', array_keys( $candidates ) ),
+			'already granted in database, nothing written'
+		);
+		return;
+	}
+
+	/*
+	 * Genuinely absent: write, but from the database copy, not the stale one —
+	 * AND REFUSE IF THAT READ FAILED.
+	 *
+	 * This is the only path of the plugin that runs on EVERY request, so it is
+	 * the one where writing from a stale copy does the most damage: `add_cap()`
+	 * rewrites the whole roles option, and a copy that has lost a role erases
+	 * it. Calling the reload and ignoring its answer cancelled the guard on
+	 * precisely the hottest path, which is worse than not having it.
+	 */
+	if ( ! dahu_role_manager_reload_roles_from_db() ) {
+		dahu_role_manager_log_role_action(
+			'extra_caps_refused',
+			implode( ',', array_keys( $missing ) ),
+			'roles option unreadable in database, nothing written'
+		);
+		return;
+	}
+
+	foreach ( $missing as $role_slug => $caps ) {
+
+		$role = get_role( $role_slug );
+		if ( ! $role ) {
+			continue;
+		}
+
+		foreach ( $caps as $cap ) {
+			if ( ! $role->has_cap( $cap ) ) {
 				$role->add_cap( $cap );
 			}
 		}

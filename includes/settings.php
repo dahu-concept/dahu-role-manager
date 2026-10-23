@@ -190,9 +190,24 @@ function dahu_role_manager_sanitize_role_data($role_data, $role_slug = '') {
 
     // Editable accounts are only ever stored for a role allowed to manage
     // accounts at all, even through a forged request.
-    if ($role_slug !== '' && dahu_role_manager_role_can_manage_accounts($role_slug)
-        && !empty($role_data['sm_editable_roles']) && is_array($role_data['sm_editable_roles'])) {
-        $clean['sm_editable_roles'] = dahu_role_manager_sanitize_sm_editable_roles($role_data['sm_editable_roles']);
+    if ($role_slug !== '' && dahu_role_manager_role_can_manage_accounts($role_slug)) {
+
+        if (!empty($role_data['sm_editable_roles']) && is_array($role_data['sm_editable_roles'])) {
+            $clean['sm_editable_roles'] = dahu_role_manager_sanitize_sm_editable_roles($role_data['sm_editable_roles']);
+        }
+
+        // A role missing from the in-memory copy of wp_roles() gets no
+        // checkbox on the screen, so it is never submitted, so the strict
+        // validation above drops it. Keep a slug that WAS already stored and
+        // is unknown right now: it would otherwise lose its place silently
+        // and for good. See includes/role-store.php.
+        $stored = get_option(DAHU_ROLE_MANAGER_OPTION, []);
+        if (is_array($stored) && isset($stored[$role_slug]['sm_editable_roles'])) {
+            $clean['sm_editable_roles'] = dahu_role_manager_keep_stored_unknown_roles(
+                $clean['sm_editable_roles'],
+                $stored[$role_slug]['sm_editable_roles']
+            );
+        }
     }
 
     if (!empty($role_data['menus']) && is_array($role_data['menus'])) {
@@ -353,6 +368,9 @@ function dahu_role_manager_settings_page() {
 
             <div class="dahu-ui-card">
             <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Menus', 'dahu-role-manager'); ?></h2></div>
+            <?php if (empty($menu_map)): ?>
+            <p class="dahu-ui-hint"><?php esc_html_e('The admin menu was not readable on this page load, so there is nothing to choose from here.', 'dahu-role-manager'); ?></p>
+            <?php else: ?>
             <p>
                 <label>
                     <input type="checkbox" onclick="dahuRoleManagerToggleAll(this,'dahu-role-manager-menus-columns')" />
@@ -388,6 +406,7 @@ function dahu_role_manager_settings_page() {
                     </div>
                 <?php endforeach; ?>
             </div>
+            <?php endif; ?>
             </div>
             <?php endif; ?>
 
@@ -426,6 +445,9 @@ function dahu_role_manager_settings_page() {
                     ?>
                 </label>
             </p>
+            <?php if (empty($adminbar_map)): ?>
+            <p class="dahu-ui-hint"><?php esc_html_e('The admin bar was not readable on this page load, so there is nothing to choose from here.', 'dahu-role-manager'); ?></p>
+            <?php else: ?>
             <p>
                 <label>
                     <input type="checkbox" onclick="dahuRoleManagerToggleAll(this,'dahu-role-manager-adminbar-columns')" />
@@ -489,6 +511,7 @@ function dahu_role_manager_settings_page() {
                     </div>
                 <?php endforeach; ?>
             </div>
+            <?php endif; ?>
             </div>
 
             <?php // Open to EVERY role, administrator included: this option
@@ -530,7 +553,7 @@ function dahu_role_manager_settings_page() {
                 );
                 ?>
             </p>
-            <textarea name="<?php echo esc_attr(DAHU_ROLE_MANAGER_OPTION); ?>[<?php echo esc_attr($selected_role); ?>][hide_classes]" rows="6" cols="80" class="dahu-rm-textarea" placeholder=".notice.notice-warning&#10;#mon-plugin-notice"><?php echo esc_textarea($hide_classes_text); ?></textarea>
+            <textarea name="<?php echo esc_attr(DAHU_ROLE_MANAGER_OPTION); ?>[<?php echo esc_attr($selected_role); ?>][hide_classes]" rows="6" cols="80" class="dahu-rm-textarea" placeholder=".notice.notice-warning&#10;#some-plugin-notice"><?php echo esc_textarea($hide_classes_text); ?></textarea>
             </div>
 
             <?php if ($role_can_manage_accounts && $selected_role !== 'administrator'): ?>

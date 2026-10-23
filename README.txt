@@ -4,11 +4,11 @@ Tags: roles, capabilities, admin menu, user management, woocommerce
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.0.0
+Stable tag: 3.2.1
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
-Shape the WordPress admin for each role: which menus they see, which accounts they may edit, where they land on login. Duplicate, rename and delete roles.
+Shape the admin for each role: which menus they see, which accounts they may edit, where they land on login. Duplicate, rename and delete roles.
 
 == Description ==
 
@@ -100,10 +100,28 @@ Capabilities are only ever added, never removed.
 
 == Changelog ==
 
+= 3.2.1 =
+* The Menus and Admin bar cards now say so when the admin menu or the admin bar could not be read, instead of showing a "check all" box above an empty list.
+* The selector example in the hiding field is no longer written in French.
+
+= 3.2.0 =
+* The activation screen now opens on the plugin's own mark rather than its initials, and the banner carries the same drawing as a watermark.
+
+= 3.1.0 =
+* Fixed: creating, renaming or deleting a role, and the extra-capabilities hook, now read the roles straight from the database before writing. WordPress rewrites the whole roles option from its in-memory copy, so a copy served stale by a persistent object cache could erase roles created since it was cached.
+* Fixed: the extra-capabilities hook writes nothing at all when the capability is already granted in the database, and leaves a log line instead.
+* Fixed: a role slug already saved in an editable-accounts list is kept even while that role is missing from the live roles, instead of being dropped silently. Deleting a role from the Roles tab still removes its slug from every list — including when the role had already gone from the database, which previously left the slug in those lists for good.
+* Fixed: the extra-capabilities hook refuses to write when the roles cannot be read from the database, instead of calling the check and ignoring its answer. That hook runs on every request, so it was the one place where writing from a stale copy did the most damage.
+* Fixed: an operation refused because the roles could not be read now says so, instead of claiming the role is protected — a message that named a cause which was not the cause, and left no way to tell the two apart.
+* Fixed: the reload names the site it is reading, so on a network it can no longer validate against one site's roles while writing another's.
+
 = 3.0.0 =
 * First public release.
 
 == Upgrade Notice ==
+
+= 3.1.0 =
+Recommended on any site with a persistent object cache (Redis, Memcached).
 
 = 3.0.0 =
 First public release.

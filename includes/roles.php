@@ -186,6 +186,22 @@ function dahu_role_manager_handle_create_role() {
     // The capability array is copied whole and as-is.
     $capabilities = is_array($source_role->capabilities) ? $source_role->capabilities : [];
 
+    // add_role() rewrites the whole roles option from the copy in memory:
+    // start from what the database really holds, or a role created since that
+    // copy was cached would be erased. See includes/role-store.php.
+    if (!dahu_role_manager_reload_roles_from_db()) {
+        // The database read came back empty: writing from it would wipe every
+        // role on the site. Refuse rather than guess.
+        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_create', $slug));
+        exit;
+    }
+
+    // The reloaded copy may already know this slug.
+    if (get_role($slug) !== null) {
+        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_exists', $slug));
+        exit;
+    }
+
     $created = add_role($slug, $label, $capabilities);
     if (!$created) {
         wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_create', $slug));
@@ -226,6 +242,21 @@ function dahu_role_manager_handle_rename_role() {
 
     if ($label === '') {
         wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_label', $slug));
+        exit;
+    }
+
+    // This write rewrites the whole roles option: start from what the database
+    // really holds, or roles created since the cached copy would be erased.
+    // See includes/role-store.php.
+    if (!dahu_role_manager_reload_roles_from_db()) {
+        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_unreadable', $slug));
+        exit;
+    }
+
+    // Refused when the reloaded copy has no such role: renaming it would put
+    // a role back that the database no longer has.
+    if (get_role($slug) === null) {
+        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_vanished', $slug));
         exit;
     }
 
@@ -275,25 +306,80 @@ function dahu_role_manager_handle_delete_role() {
         exit;
     }
 
+    // remove_role() rewrites the whole roles option from the copy in memory:
+    // start from what the database really holds, or roles created since that
+    // copy was cached would disappear along with this one.
+    // See includes/role-store.php.
+    if (!dahu_role_manager_reload_roles_from_db()) {
+        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_unreadable', $slug));
+        exit;
+    }
+
+    if (get_role($slug) === null) {
+        // Already gone from the database. Nothing to remove, but the settings
+        // and the editable-accounts lists still name it.
+        dahu_role_manager_forget_role_settings($slug);
+        dahu_role_manager_log_role_action('delete', $slug, 'already absent from database');
+        wp_safe_redirect(dahu_role_manager_manage_redirect_url('deleted', $slug));
+        exit;
+    }
+
     remove_role($slug);
 
-    // Drop the now-orphaned interface settings for that role.
-    $settings = get_option(DAHU_ROLE_MANAGER_OPTION, []);
-    if (is_array($settings)) {
-        $changed = false;
-        if (isset($settings[$slug])) {
-            unset($settings[$slug]);
-            $changed = true;
-        }
-        if ($changed) {
-            update_option(DAHU_ROLE_MANAGER_OPTION, $settings);
-        }
-    }
+    dahu_role_manager_forget_role_settings($slug);
 
     dahu_role_manager_log_role_action('delete', $slug, 'users=0');
 
     wp_safe_redirect(dahu_role_manager_manage_redirect_url('deleted', $slug));
     exit;
+}
+
+/**
+ * Forget everything this plugin stored about a role that is going away.
+ *
+ * Its own interface settings, and its slug in every other role's
+ * editable-accounts list. A deliberate deletion has to win over the rule that
+ * keeps stored but unknown slugs — otherwise the slug stays in those lists for
+ * good, and the day somebody recreates it for another purpose, shop managers
+ * silently regain the right to create and delete those accounts. Access
+ * granted without an administrator ever asking for it.
+ *
+ * A FUNCTION RATHER THAN A BLOCK, and that is the fix: this ran only on the
+ * path where `remove_role()` was actually called. The other path — the role
+ * has already gone from the database, so there is nothing to remove — returned
+ * «  deleted  » and left the lists untouched.
+ *
+ * @param string $slug Role being deleted.
+ * @return void
+ */
+function dahu_role_manager_forget_role_settings($slug) {
+
+    $settings = get_option(DAHU_ROLE_MANAGER_OPTION, []);
+    if (!is_array($settings)) {
+        return;
+    }
+
+    $changed = false;
+
+    if (isset($settings[$slug])) {
+        unset($settings[$slug]);
+        $changed = true;
+    }
+
+    foreach ($settings as $other_slug => $data) {
+        if (!is_array($data) || empty($data['sm_editable_roles']) || !is_array($data['sm_editable_roles'])) {
+            continue;
+        }
+        $kept = array_values(array_diff($data['sm_editable_roles'], [$slug]));
+        if (count($kept) !== count($data['sm_editable_roles'])) {
+            $settings[$other_slug]['sm_editable_roles'] = $kept;
+            $changed = true;
+        }
+    }
+
+    if ($changed) {
+        update_option(DAHU_ROLE_MANAGER_OPTION, $settings);
+    }
 }
 
 /**
@@ -326,6 +412,11 @@ function dahu_role_manager_render_roles_tab_notices() {
         /* translators: %s: the identifier that was refused. */
         'error_create'    => ['error', __('Creating the role "%s" failed.', 'dahu-role-manager')],
         'error_protected' => ['error', __('This role is protected: it can be neither renamed nor deleted from this tab.', 'dahu-role-manager')],
+        // Saying «  protected  » here was a lie: nothing is protected, the
+        // roles could not be read. An administrator told that retries for
+        // ever, because the message names a cause that is not the cause.
+        'error_unreadable' => ['error', __('Refused: the roles could not be read from the database, so nothing was written — that way no role is erased. Try again, and if it persists, have the roles option checked.', 'dahu-role-manager')],
+        'error_vanished'  => ['error', __('The role "%s" is no longer in the database. The screen has been refreshed.', 'dahu-role-manager')],
         /* translators: %s: role display name. */
         'error_has_users' => ['error', __('Deletion refused: users are still assigned to the role "%s". Reassign them first.', 'dahu-role-manager')],
     ];
