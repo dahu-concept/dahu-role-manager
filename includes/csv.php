@@ -62,9 +62,13 @@ function dahu_role_manager_export_csv() {
 	header( 'Content-Type: text/csv; charset=utf-8' );
 	header( 'Content-Disposition: attachment; filename=dahu-role-manager-export-' . gmdate( 'Y-m-d' ) . '.csv' );
 
-	$out = fopen( 'php://output', 'w' );
+	/* fopen() ON php://output, NOT WP_Filesystem. The file is never written to
+	 * disk: the CSV is streamed straight to the browser as the download body.
+	 * WP_Filesystem has no stream to hand back, so there is nothing it could do
+	 * here, and buffering the whole export in memory first would be worse. */
+	$out = fopen( 'php://output', 'w' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- php://output is the download body, not a file on disk.
 	dahu_role_manager_write_csv_settings( $out, $settings );
-	fclose( $out );
+	fclose( $out ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- closes the php://output stream opened above.
 	exit;
 }
 
@@ -309,7 +313,10 @@ function dahu_role_manager_import_csv() {
 	}
 
 	$tmp_file = sanitize_text_field( wp_unslash( $upload['tmp_name'] ) );
-	$handle   = fopen( $tmp_file, 'r' );
+	/* The import is read line by line with fgetcsv(), which needs a handle.
+	 * WP_Filesystem only offers get_contents(), i.e. the whole upload in memory
+	 * at once; a large export would then fail on memory rather than on content. */
+	$handle   = fopen( $tmp_file, 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- fgetcsv() needs a handle; WP_Filesystem would load the whole upload into memory.
 
 	if ( ! $handle ) {
 		wp_safe_redirect( add_query_arg( 'dahu_role_manager_import', 'error_read', $redirect_base ) );
@@ -317,7 +324,7 @@ function dahu_role_manager_import_csv() {
 	}
 
 	$parsed = dahu_role_manager_parse_csv_settings( $handle );
-	fclose( $handle );
+	fclose( $handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- closes the import handle opened above.
 
 	if ( null === $parsed ) {
 		wp_safe_redirect( add_query_arg( 'dahu_role_manager_import', 'error_format', $redirect_base ) );

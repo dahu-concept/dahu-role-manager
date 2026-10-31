@@ -1,5 +1,5 @@
 === Dahu Role Manager ===
-Contributors: hugovialjaime
+Contributors: dahuconcept
 Tags: roles, capabilities, admin menu, user management, woocommerce
 Requires at least: 6.0
 Tested up to: 7.1

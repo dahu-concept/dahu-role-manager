@@ -135,9 +135,16 @@ function dahu_role_manager_print_css_hidden_submenus() {
 		$selectors[] = '#adminmenu .wp-submenu a[href="' . esc_attr( $href ) . '"]';
 	}
 
-	echo '<style id="dahu-role-manager-css-hidden-submenus">'
-		. implode( ', ', $selectors ) // Already escaped above.
+	/* THE BLOCK IS ASSEMBLED FIRST, THEN ECHOED ON ONE LINE. A phpcs:ignore
+	 * covers a single line, and the sniff does not fire on the echo keyword:
+	 * it fires on the concatenated part that carries the variable. Spread over
+	 * several lines, the echo therefore cannot be exempted at all. Every href
+	 * in $selectors went through esc_attr() where the list is built above. */
+	$style = '<style id="dahu-role-manager-css-hidden-submenus">'
+		. implode( ', ', $selectors )
 		. '{display:none !important;}</style>' . "\n";
+
+	echo $style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every href in $selectors passed through esc_attr() where the list is built.
 }
 add_action( 'admin_head', 'dahu_role_manager_print_css_hidden_submenus' );
 
@@ -255,11 +262,12 @@ function dahu_role_manager_output_full_adminbar_css() {
 		return;
 	}
 
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Every
-	// selector and declaration is passed through esc_html() where $css is built.
-	echo '<style id="dahu-role-manager-hide-full-adminbar">'
+	/* Assembled first, echoed on one line, for the reason given above. */
+	$style = '<style id="dahu-role-manager-hide-full-adminbar">'
 		. $css
 		. '</style>' . "\n";
+
+	echo $style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every selector and declaration passed through esc_html() where $css is built.
 }
 add_action( 'admin_head', 'dahu_role_manager_output_full_adminbar_css' );
 add_action( 'wp_head', 'dahu_role_manager_output_full_adminbar_css' );

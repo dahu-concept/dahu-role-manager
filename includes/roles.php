@@ -416,6 +416,7 @@ function dahu_role_manager_render_roles_tab_notices() {
         // roles could not be read. An administrator told that retries for
         // ever, because the message names a cause that is not the cause.
         'error_unreadable' => ['error', __('Refused: the roles could not be read from the database, so nothing was written — that way no role is erased. Try again, and if it persists, have the roles option checked.', 'dahu-role-manager')],
+        /* translators: %s: role display name. */
         'error_vanished'  => ['error', __('The role "%s" is no longer in the database. The screen has been refreshed.', 'dahu-role-manager')],
         /* translators: %s: role display name. */
         'error_has_users' => ['error', __('Deletion refused: users are still assigned to the role "%s". Reassign them first.', 'dahu-role-manager')],
