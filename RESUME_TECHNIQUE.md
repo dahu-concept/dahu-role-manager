@@ -1,6 +1,6 @@
 # Dahu Role Manager — résumé technique
 
-Version 3.0.0. Licence MIT. Hugo Vial-Jaime — Dahu-Concept.
+Version 3.1.0. Licence MIT. Hugo Vial-Jaime — Dahu-Concept.
 
 Ce document est la note de travail du développeur : structure du code, choix
 d'implémentation, pièges WordPress rencontrés, et traçabilité du portage.
@@ -17,12 +17,13 @@ includes/
   order-lock.php               verrou des commandes « Terminée » (3 niveaux)
   editable-accounts.php        périmètre des comptes gérables + capacités
   csv.php                      export / import CSV
+  role-store.php               lecture des rôles directement en base
   roles.php                    duplication, renommage, suppression + notices
   settings.php                 écran de réglages et enregistrement
 uninstall.php                  suppression des options, JAMAIS des rôles
 ```
 
-57 fonctions, toutes préfixées `dahu_role_manager_`. Aucune classe : le plugin
+57 fonctions, plus les six de `role-store.php` (3.1.0), toutes préfixées `dahu_role_manager_`. Aucune classe : le plugin
 est un ensemble de hooks, et l'indirection d'un conteneur n'apporterait rien ici.
 
 Deux options seulement :
@@ -243,6 +244,74 @@ français (`l'import`) et sur `'php://output'` — d'où le passage au tokenizer
 ne peut pas se tromper sur les frontières de chaînes.
 
 ---
+
+## 5 bis. Écritures de l'option des rôles — 3.1.0 (portage de dahu-roles-interface 2.8.2)
+
+**Source** : `dahu-roles-interface` 2.8.2 (22/10/2026), section « Écritures des
+rôles ». Défaut générique, aucun élément propre à Annad : porté tel quel, aux
+préfixes près. Les trois listes de réglages de la version Annad
+(`sm_editable_roles`, `order_number_copy_roles`, `email_admin_roles`) n'en font
+qu'une ici — les deux autres sections n'existent pas côté public.
+
+**Le défaut.** WordPress garde tous les rôles dans UNE option, et `WP_Roles`
+en tient une copie en mémoire remplie depuis le cache d'objets. Chaque
+écriture de cette option — rôle créé, renommé, supprimé, capacité ajoutée —
+réécrit l'option ENTIÈRE depuis cette copie. Une copie périmée (Redis rejoué
+depuis un vieux dump, écriture concurrente d'une autre requête) ne se contente
+donc pas d'ignorer un rôle : elle l'**efface**, puisqu'il est absent du
+tableau réécrit. Le mécanisme efface sa propre trace : `add_cap()` ne
+s'exécute que si la capacité manque, et son premier acte est de la remettre.
+
+Quatre chemins d'écriture, tous concernés : `dahu_role_manager_grant_extra_caps()`
+(crochet `dahu_role_manager_extra_role_caps`, sur `init`, donc à chaque
+requête), `add_role()` à la création, `update_option( $wp_roles->role_key, … )`
+au renommage, `remove_role()` à la suppression.
+
+**Le correctif** (`includes/role-store.php`) :
+
+- `dahu_role_manager_read_roles_db()` lit l'option par `$wpdb->get_var()`, hors
+  de tout cache ; `dahu_role_manager_purge_roles_cache()` vide `alloptions`,
+  `notoptions` et l'option ; `dahu_role_manager_reload_roles_from_db()` purge
+  puis `wp_roles()->for_site()`.
+- Le crochet des capacités : sortie immédiate si rien ne manque dans la copie
+  (coût inchangé, **aucune requête** — c'est le cas courant). Sinon lecture
+  directe de la base : capacité déjà présente en base → cache purgé, ligne
+  `action=extra_caps_skip` au journal, **aucune écriture** ; vraiment absente →
+  rechargement depuis la base, puis `add_cap()`.
+- Création, renommage et suppression : rechargement juste avant l'écriture. Le
+  renommage et la suppression refusent un rôle absent de la base rechargée, et
+  la création refuse un slug qu'elle y trouve.
+- **Listes de réglages** (`dahu_role_manager_keep_stored_unknown_roles()`) :
+  pendant qu'un rôle manque à la copie lue, l'écran ne lui dessine pas de case,
+  elle n'est donc pas soumise, et la validation stricte l'écartait de
+  `sm_editable_roles`. Revenu, le rôle retrouvait ses capacités mais pas sa
+  place. Désormais un slug **déjà enregistré** et inconnu de `wp_roles()` est
+  conservé. Un rôle connu et décoché est toujours retiré, et la suppression par
+  l'onglet Gestion des rôles retire le slug de toutes les listes (sinon la
+  règle de conservation le ressusciterait indéfiniment). L'import CSV est
+  inchangé : il remplace ce qu'il transporte.
+
+**Portée.** Cela réduit le risque qu'une écriture de CETTE extension part d'une
+copie périmée. Cela ne protège pas l'option contre le reste du site. La piste
+d'un filtre `pre_update_option_{option}` qui réinjecterait les rôles manquants
+est **écartée** : `remove_role()` du cœur fonctionne exactement ainsi (retirer
+la clé, réécrire l'ensemble), donc un garde-fou aveugle rendrait toute
+suppression de rôle impossible, y compris le nettoyage légitime d'une
+extension à sa désinstallation.
+
+**Garde-fou de dernier recours** : `dahu_role_manager_reload_roles_from_db()`
+rend **false** quand la base ne porte aucun rôle — ce n'est pas un site sans
+rôles, c'est une lecture qui a mal tourné, et écrire l'option depuis un
+ensemble vide effacerait tous les rôles. Les trois écritures refusent alors
+plutôt que de deviner.
+
+**Banc** : `_harness/prove-role-store.php` — sept assertions de comportement
+(lecture directe, capacité en base, purge, rechargement, base vide,
+conservation, absence de doublon) et sept assertions de structure lues au
+tokenizer PHP (le garde-fou précède l'écriture, dans la même fonction).
+Chacune prouvée par une violation délibérée : `--violer=<nom>`. Huit tombent
+seules ; `helper-lit-la-base` en entraîne une seconde (`helper-cap-en-base`),
+qui lit ce qu'elle produit — cascade causale, pas une voisine abîmée.
 
 ## 6. Retrouver le comportement Annad depuis un snippet
 
