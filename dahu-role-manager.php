@@ -1,7 +1,6 @@
 <?php
 /**
  * Plugin Name:       Dahu Role Manager
- * Plugin URI:        https://dahu-concept.fr
  * Description:       Shapes the admin for each role: which menus, submenus and admin-bar items they see, which accounts they may edit, where they land on login. Duplicate, rename and delete roles, and export the whole thing as CSV.
  * Version:           3.2.1
  * Author:            Hugo Vial-Jaime
