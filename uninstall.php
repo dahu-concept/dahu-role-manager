@@ -54,7 +54,7 @@ $wpdb->query(
 // Multisite: the same cleanup on every site of the network.
 if ( is_multisite() ) {
 
-	$site_ids = get_sites(
+	$ubac_roles_site_ids = get_sites(
 		array(
 			'fields'                 => 'ids',
 			'number'                 => 0,
@@ -62,9 +62,9 @@ if ( is_multisite() ) {
 		)
 	);
 
-	foreach ( $site_ids as $site_id ) {
+	foreach ( $ubac_roles_site_ids as $ubac_roles_site_id ) {
 
-		switch_to_blog( $site_id );
+		switch_to_blog( $ubac_roles_site_id );
 
 		delete_option( 'ubac_roles_settings' );
 		delete_option( 'ubac_welcome_seen_ubac-roles' );

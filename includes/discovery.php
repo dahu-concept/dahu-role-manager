@@ -249,6 +249,7 @@ function ubac_roles_get_adminbar_map() {
 	 * here and whatever was gathered before it is kept.
 	 */
 	try {
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- core's own hook, fired on purpose against a throwaway admin bar: that is the only way to learn which nodes a role would actually be shown.
 		do_action_ref_array( 'admin_bar_menu', array( &$temp_bar ) );
 	} catch ( Throwable $e ) {
 		if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
