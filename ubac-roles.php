@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name:       Dahu Role Manager
+ * Plugin Name:       Ubac Role Manager
  * Description:       Shapes the admin for each role: which menus, submenus and admin-bar items they see, which accounts they may edit, where they land on login. Duplicate, rename and delete roles, and export the whole thing as CSV.
  * Version:           3.2.1
  * Author:            Hugo Vial-Jaime
  * Author URI:        https://dahu-concept.fr
  * License:           MIT
  * License URI:       https://opensource.org/licenses/MIT
- * Text Domain:       dahu-role-manager
+ * Text Domain:       ubac-roles
  * Domain Path:       /languages
  * Requires at least: 6.0
  * Requires PHP:      7.4
@@ -62,7 +62,7 @@ add_filter(
 		$settings = sprintf(
 			'<a href="%s">%s</a>',
 			esc_url( admin_url( 'options-general.php?page=' . DAHU_ROLE_MANAGER_SLUG ) ),
-			esc_html__( 'Settings', 'dahu-role-manager' )
+			esc_html__( 'Settings', 'ubac-roles' )
 		);
 		array_unshift( $links, $settings );
 		return $links;
@@ -82,18 +82,18 @@ add_filter(
 		return array(
 			sprintf(
 				/* translators: %s: plugin version number. */
-				esc_html__( 'Version %s', 'dahu-role-manager' ),
+				esc_html__( 'Version %s', 'ubac-roles' ),
 				esc_html( $header['Version'] )
 			),
 			sprintf(
 				'<a href="%s" target="_blank" rel="noopener">%s</a>',
 				esc_url( 'https://dahu-concept.fr' ),
-				esc_html__( 'By Hugo Vial-Jaime — Dahu-Concept', 'dahu-role-manager' )
+				esc_html__( 'By Hugo Vial-Jaime — Dahu-Concept', 'ubac-roles' )
 			),
 			sprintf(
 				'<a href="%s" target="_blank" rel="noopener">%s</a>',
 				esc_url( 'https://dahu-concept.fr' ),
-				esc_html__( 'Plugin website', 'dahu-role-manager' )
+				esc_html__( 'Plugin website', 'ubac-roles' )
 			),
 		);
 	},
@@ -128,8 +128,8 @@ add_action(
 		Dahu_Welcome::register(
 			array(
 				'slug'       => 'dahu-role-manager',
-				'name'       => __( 'Role manager', 'dahu-role-manager' ),
-				'tagline'    => __( 'Who can do what, and what changed since last time.', 'dahu-role-manager' ),
+				'name'       => __( 'Role manager', 'ubac-roles' ),
+				'tagline'    => __( 'Who can do what, and what changed since last time.', 'ubac-roles' ),
 				'file'       => DAHU_ROLE_MANAGER_FILE,
 				'version'    => DAHU_ROLE_MANAGER_VERSION,
 				'textdomain' => 'dahu-role-manager',
@@ -148,11 +148,11 @@ add_action(
 				 * no text domain of its own.
 				 */
 				'strings'    => array(
-					'next'   => __( 'Next', 'dahu-role-manager' ),
-					'done'   => __( 'Done', 'dahu-role-manager' ),
-					'skip'   => __( 'Skip', 'dahu-role-manager' ),
-					'of'     => __( 'of', 'dahu-role-manager' ),
-					'denied' => __( 'You are not allowed to view this page.', 'dahu-role-manager' ),
+					'next'   => __( 'Next', 'ubac-roles' ),
+					'done'   => __( 'Done', 'ubac-roles' ),
+					'skip'   => __( 'Skip', 'ubac-roles' ),
+					'of'     => __( 'of', 'ubac-roles' ),
+					'denied' => __( 'You are not allowed to view this page.', 'ubac-roles' ),
 				),
 				/*
 				 * The one-time tour, on the main screen (Settings > Role manager).
@@ -164,32 +164,32 @@ add_action(
 				'tour'        => array(
 					array(
 						'selector' => '#dahu_role',
-						'title'    => __( 'Pick a role', 'dahu-role-manager' ),
-						'text'     => __( 'Everything below applies to the role chosen here.', 'dahu-role-manager' ),
+						'title'    => __( 'Pick a role', 'ubac-roles' ),
+						'text'     => __( 'Everything below applies to the role chosen here.', 'ubac-roles' ),
 					),
 					array(
 						'selector' => '.dahu-rm-tabs a[href*="tab=roles"]',
-						'title'    => __( 'Manage the roles', 'dahu-role-manager' ),
-						'text'     => __( 'Create, rename or delete a role.', 'dahu-role-manager' ),
+						'title'    => __( 'Manage the roles', 'ubac-roles' ),
+						'text'     => __( 'Create, rename or delete a role.', 'ubac-roles' ),
 					),
 					array(
 						'selector' => '.dahu-rm-tabs a[href*="tab=csv"]',
-						'title'    => __( 'Export and import', 'dahu-role-manager' ),
-						'text'     => __( 'Copy every setting to another shop with a CSV file.', 'dahu-role-manager' ),
+						'title'    => __( 'Export and import', 'ubac-roles' ),
+						'text'     => __( 'Copy every setting to another shop with a CSV file.', 'ubac-roles' ),
 					),
 				),
 				'points'     => array(
 				array(
-					'title' => __( 'Roles, plainly', 'dahu-role-manager' ),
-					'text'  => __( 'Create, rename and retire roles without a developer.', 'dahu-role-manager' ),
+					'title' => __( 'Roles, plainly', 'ubac-roles' ),
+					'text'  => __( 'Create, rename and retire roles without a developer.', 'ubac-roles' ),
 				),
 				array(
-					'title' => __( 'Capabilities, readably', 'dahu-role-manager' ),
-					'text'  => __( 'What each role may do, in one screen.', 'dahu-role-manager' ),
+					'title' => __( 'Capabilities, readably', 'ubac-roles' ),
+					'text'  => __( 'What each role may do, in one screen.', 'ubac-roles' ),
 				),
 				array(
-					'title' => __( 'A record', 'dahu-role-manager' ),
-					'text'  => __( 'Every change is logged with who made it.', 'dahu-role-manager' ),
+					'title' => __( 'A record', 'ubac-roles' ),
+					'text'  => __( 'Every change is logged with who made it.', 'ubac-roles' ),
 				),
 				),
 			)

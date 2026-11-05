@@ -15,8 +15,8 @@ defined( 'ABSPATH' ) || exit;
 add_action('admin_menu', 'dahu_role_manager_settings_menu');
 function dahu_role_manager_settings_menu() {
     add_options_page(
-        __('Role manager', 'dahu-role-manager'),
-        __('Role manager', 'dahu-role-manager'),
+        __('Role manager', 'ubac-roles'),
+        __('Role manager', 'ubac-roles'),
         'manage_options',
         DAHU_ROLE_MANAGER_SLUG,
         'dahu_role_manager_settings_page'
@@ -77,7 +77,7 @@ function dahu_role_manager_enqueue_admin_style($hook) {
 add_action('admin_post_dahu_role_manager_save_role_settings', 'dahu_role_manager_save_role_settings');
 function dahu_role_manager_save_role_settings() {
     if (!current_user_can('manage_options')) {
-        wp_die(esc_html__('You are not allowed to change these settings.', 'dahu-role-manager'));
+        wp_die(esc_html__('You are not allowed to change these settings.', 'ubac-roles'));
     }
     check_admin_referer('dahu_role_manager_save_role_settings');
 
@@ -250,8 +250,8 @@ function dahu_role_manager_settings_page() {
         ?>
         <div class="wrap dahu-ui">
             <div class="dahu-ui-head">
-				<h1 class="dahu-ui-head__title"><?php esc_html_e('Role manager', 'dahu-role-manager'); ?></h1>
-				<p class="dahu-ui-head__sub"><?php esc_html_e('Who can do what, and what changed since last time.', 'dahu-role-manager'); ?></p>
+				<h1 class="dahu-ui-head__title"><?php esc_html_e('Role manager', 'ubac-roles'); ?></h1>
+				<p class="dahu-ui-head__sub"><?php esc_html_e('Who can do what, and what changed since last time.', 'ubac-roles'); ?></p>
 			</div>
             <hr class="wp-header-end">
             <?php dahu_role_manager_render_tabs_nav($tab); ?>
@@ -315,8 +315,8 @@ function dahu_role_manager_settings_page() {
     ?>
     <div class="wrap dahu-ui">
         <div class="dahu-ui-head">
-				<h1 class="dahu-ui-head__title"><?php esc_html_e('Role manager', 'dahu-role-manager'); ?></h1>
-				<p class="dahu-ui-head__sub"><?php esc_html_e('Who can do what, and what changed since last time.', 'dahu-role-manager'); ?></p>
+				<h1 class="dahu-ui-head__title"><?php esc_html_e('Role manager', 'ubac-roles'); ?></h1>
+				<p class="dahu-ui-head__sub"><?php esc_html_e('Who can do what, and what changed since last time.', 'ubac-roles'); ?></p>
 			</div>
             <hr class="wp-header-end">
         <?php dahu_role_manager_render_tabs_nav($tab); ?>
@@ -327,7 +327,7 @@ function dahu_role_manager_settings_page() {
 
         <form method="get" action="" class="dahu-rm-filter">
             <input type="hidden" name="page" value="<?php echo esc_attr( DAHU_ROLE_MANAGER_SLUG ); ?>" />
-            <label for="dahu_role"><strong><?php esc_html_e('Role to configure:', 'dahu-role-manager'); ?></strong></label>
+            <label for="dahu_role"><strong><?php esc_html_e('Role to configure:', 'ubac-roles'); ?></strong></label>
             <select name="dahu_role" id="dahu_role" onchange="this.form.submit()">
                 <?php foreach ($all_roles as $slug => $info): ?>
                     <option value="<?php echo esc_attr($slug); ?>" <?php selected($selected_role, $slug); ?>>
@@ -345,11 +345,11 @@ function dahu_role_manager_settings_page() {
 
             <?php if ($selected_role !== 'administrator'): ?>
             <div class="dahu-ui-card">
-            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Land on', 'dahu-role-manager'); ?></h2></div>
-            <p><?php esc_html_e('The page this role sees right after logging in, instead of the dashboard. Useful when the dashboard is hidden from their menu below.', 'dahu-role-manager'); ?></p>
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Land on', 'ubac-roles'); ?></h2></div>
+            <p><?php esc_html_e('The page this role sees right after logging in, instead of the dashboard. Useful when the dashboard is hidden from their menu below.', 'ubac-roles'); ?></p>
             <p>
                 <select name="<?php echo esc_attr(DAHU_ROLE_MANAGER_OPTION); ?>[<?php echo esc_attr($selected_role); ?>][start_menu]">
-                    <option value="" <?php selected($role_settings['start_menu'], ''); ?>><?php esc_html_e('Dashboard (default)', 'dahu-role-manager'); ?></option>
+                    <option value="" <?php selected($role_settings['start_menu'], ''); ?>><?php esc_html_e('Dashboard (default)', 'ubac-roles'); ?></option>
                     <?php foreach ($menu_map as $slug => $data): ?>
                         <option value="<?php echo esc_attr($slug); ?>" <?php selected($role_settings['start_menu'], $slug); ?>>
                             <?php echo esc_html($data['label']); ?>
@@ -367,14 +367,14 @@ function dahu_role_manager_settings_page() {
             </div>
 
             <div class="dahu-ui-card">
-            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Menus', 'dahu-role-manager'); ?></h2></div>
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Menus', 'ubac-roles'); ?></h2></div>
             <?php if (empty($menu_map)): ?>
-            <p class="dahu-ui-hint"><?php esc_html_e('The admin menu was not readable on this page load, so there is nothing to choose from here.', 'dahu-role-manager'); ?></p>
+            <p class="dahu-ui-hint"><?php esc_html_e('The admin menu was not readable on this page load, so there is nothing to choose from here.', 'ubac-roles'); ?></p>
             <?php else: ?>
             <p>
                 <label>
                     <input type="checkbox" onclick="dahuRoleManagerToggleAll(this,'dahu-role-manager-menus-columns')" />
-                    <strong><?php esc_html_e('Check / uncheck all', 'dahu-role-manager'); ?></strong>
+                    <strong><?php esc_html_e('Check / uncheck all', 'ubac-roles'); ?></strong>
                 </label>
             </p>
             <div id="dahu-role-manager-menus-columns" class="dahu-rm-grid">
@@ -414,7 +414,7 @@ function dahu_role_manager_settings_page() {
                   // admin bar removes no capability and stays reversible from
                   // the sidebar, which is never touched for the administrator. ?>
             <div class="dahu-ui-card">
-            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Admin bar', 'dahu-role-manager'); ?></h2></div>
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Admin bar', 'ubac-roles'); ?></h2></div>
             <p>
                 <label>
                     <input type="checkbox"
@@ -424,8 +424,8 @@ function dahu_role_manager_settings_page() {
                     <?php
                     printf(
                         /* translators: %s: the bolded label "Hide the admin bar entirely". */
-                        esc_html__('%s for this role (takes precedence over the selection below)', 'dahu-role-manager'),
-                        '<strong>' . esc_html__('Hide the admin bar entirely', 'dahu-role-manager') . '</strong>'
+                        esc_html__('%s for this role (takes precedence over the selection below)', 'ubac-roles'),
+                        '<strong>' . esc_html__('Hide the admin bar entirely', 'ubac-roles') . '</strong>'
                     );
                     ?>
                 </label>
@@ -439,19 +439,19 @@ function dahu_role_manager_settings_page() {
                     <?php
                     printf(
                         /* translators: %s: the bolded label 'Add a "Log out" button'. */
-                        esc_html__('%s at the very bottom of the admin menu for this role, so they can log out even with no admin bar', 'dahu-role-manager'),
-                        '<strong>' . esc_html__('Add a "Log out" button', 'dahu-role-manager') . '</strong>'
+                        esc_html__('%s at the very bottom of the admin menu for this role, so they can log out even with no admin bar', 'ubac-roles'),
+                        '<strong>' . esc_html__('Add a "Log out" button', 'ubac-roles') . '</strong>'
                     );
                     ?>
                 </label>
             </p>
             <?php if (empty($adminbar_map)): ?>
-            <p class="dahu-ui-hint"><?php esc_html_e('The admin bar was not readable on this page load, so there is nothing to choose from here.', 'dahu-role-manager'); ?></p>
+            <p class="dahu-ui-hint"><?php esc_html_e('The admin bar was not readable on this page load, so there is nothing to choose from here.', 'ubac-roles'); ?></p>
             <?php else: ?>
             <p>
                 <label>
                     <input type="checkbox" onclick="dahuRoleManagerToggleAll(this,'dahu-role-manager-adminbar-columns')" />
-                    <strong><?php esc_html_e('Check / uncheck all', 'dahu-role-manager'); ?></strong>
+                    <strong><?php esc_html_e('Check / uncheck all', 'ubac-roles'); ?></strong>
                 </label>
             </p>
             <?php
@@ -517,7 +517,7 @@ function dahu_role_manager_settings_page() {
             <?php // Open to EVERY role, administrator included: this option
                   // restricts no access. ?>
             <div class="dahu-ui-card">
-            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Orders (WooCommerce)', 'dahu-role-manager'); ?></h2></div>
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Orders (WooCommerce)', 'ubac-roles'); ?></h2></div>
             <p>
                 <label>
                     <input type="checkbox"
@@ -527,26 +527,26 @@ function dahu_role_manager_settings_page() {
                     <?php
                     printf(
                         /* translators: %s: the bolded label "Lock editing once the order is Completed". */
-                        esc_html__('%s for this role: as soon as an order is completed, its "Order details" panel becomes read-only (status, customer, creation date, addresses, payment method). Until it is completed, nothing changes.', 'dahu-role-manager'),
-                        '<strong>' . esc_html__('Lock editing once the order is Completed', 'dahu-role-manager') . '</strong>'
+                        esc_html__('%s for this role: as soon as an order is completed, its "Order details" panel becomes read-only (status, customer, creation date, addresses, payment method). Until it is completed, nothing changes.', 'ubac-roles'),
+                        '<strong>' . esc_html__('Lock editing once the order is Completed', 'ubac-roles') . '</strong>'
                     );
                     ?>
                 </label>
             </p>
             <?php if ($selected_role === 'administrator'): ?>
                 <p class="dahu-rm-hint dahu-rm-hint--tight">
-                    <?php esc_html_e( '⚠️ Ticking this applies the lock to you as well: no administrator will be able to change the status of a completed order any more. You can always untick it again from this page.', 'dahu-role-manager' ); ?>
+                    <?php esc_html_e( '⚠️ Ticking this applies the lock to you as well: no administrator will be able to change the status of a completed order any more. You can always untick it again from this page.', 'ubac-roles' ); ?>
                 </p>
             <?php endif; ?>
             </div>
 
             <div class="dahu-ui-card">
-            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Hiding back-office elements', 'dahu-role-manager'); ?></h2></div>
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Hiding back-office elements', 'ubac-roles'); ?></h2></div>
             <p>
                 <?php
                 printf(
                     /* translators: 1: an example CSS selector, 2: another example CSS selector, 3: the CSS declaration display:none. */
-                    esc_html__('One CSS selector per line (for example %1$s or %2$s). These elements are hidden (%3$s) throughout the back-office for this role — handy for the persistent notices third-party plugins leave behind.', 'dahu-role-manager'),
+                    esc_html__('One CSS selector per line (for example %1$s or %2$s). These elements are hidden (%3$s) throughout the back-office for this role — handy for the persistent notices third-party plugins leave behind.', 'ubac-roles'),
                     '<code>.notice.notice-warning</code>',
                     '<code>#some-plugin-nag</code>',
                     '<code>display:none</code>'
@@ -558,12 +558,12 @@ function dahu_role_manager_settings_page() {
 
             <?php if ($role_can_manage_accounts && $selected_role !== 'administrator'): ?>
             <div class="dahu-ui-card">
-            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Accounts this role may edit', 'dahu-role-manager'); ?></h2></div>
+            <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Accounts this role may edit', 'ubac-roles'); ?></h2></div>
             <p>
                 <?php
                 printf(
                     /* translators: %s: the display name of the role being configured. */
-                    esc_html__('By default WooCommerce lets the shop manager edit accounts holding the Customer role and no other. Tick here the account roles %s may view, edit, create and delete.', 'dahu-role-manager'),
+                    esc_html__('By default WooCommerce lets the shop manager edit accounts holding the Customer role and no other. Tick here the account roles %s may view, edit, create and delete.', 'ubac-roles'),
                     '<strong>' . esc_html(translate_user_role($all_roles[$selected_role]['name'])) . '</strong>'
                 );
                 ?>
@@ -571,8 +571,8 @@ function dahu_role_manager_settings_page() {
             <table class="widefat striped dahu-rm-table">
                 <thead>
                     <tr>
-                        <th class="dahu-rm-col-check"><?php esc_html_e('Allow', 'dahu-role-manager'); ?></th>
-                        <th><?php esc_html_e('Role', 'dahu-role-manager'); ?></th>
+                        <th class="dahu-rm-col-check"><?php esc_html_e('Allow', 'ubac-roles'); ?></th>
+                        <th><?php esc_html_e('Role', 'ubac-roles'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -597,7 +597,7 @@ function dahu_role_manager_settings_page() {
                                 <strong><?php echo esc_html(translate_user_role($info['name'])); ?></strong>
                                 <code class="dahu-rm-slug"><?php echo esc_html($slug); ?></code>
                                 <?php if ($is_customer): ?>
-                                    <em class="dahu-rm-hint"><?php esc_html_e('(WooCommerce built-in, always on)', 'dahu-role-manager'); ?></em>
+                                    <em class="dahu-rm-hint"><?php esc_html_e('(WooCommerce built-in, always on)', 'ubac-roles'); ?></em>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -607,7 +607,7 @@ function dahu_role_manager_settings_page() {
             </div>
             <?php endif; ?>
 
-            <?php submit_button(__('Save the settings for this role', 'dahu-role-manager')); ?>
+            <?php submit_button(__('Save the settings for this role', 'ubac-roles')); ?>
         </form>
         <?php endif; ?>
 

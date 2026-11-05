@@ -1,4 +1,4 @@
-=== Dahu Role Manager ===
+=== Ubac Role Manager ===
 Contributors: dahuconcept
 Tags: role editor, menu visibility, user roles, capabilities, admin menu
 Requires at least: 6.0

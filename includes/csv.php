@@ -51,7 +51,7 @@ function dahu_role_manager_get_boolean_role_keys() {
 function dahu_role_manager_export_csv() {
 
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'You are not allowed to export these settings.', 'dahu-role-manager' ) );
+		wp_die( esc_html__( 'You are not allowed to export these settings.', 'ubac-roles' ) );
 	}
 
 	check_admin_referer( 'dahu_role_manager_export_csv' );
@@ -295,7 +295,7 @@ function dahu_role_manager_parse_csv_settings( $handle ) {
 function dahu_role_manager_import_csv() {
 
 	if ( ! current_user_can( 'manage_options' ) ) {
-		wp_die( esc_html__( 'You are not allowed to import these settings.', 'dahu-role-manager' ) );
+		wp_die( esc_html__( 'You are not allowed to import these settings.', 'ubac-roles' ) );
 	}
 
 	check_admin_referer( 'dahu_role_manager_import_csv' );

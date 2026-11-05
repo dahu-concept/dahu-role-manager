@@ -409,7 +409,7 @@ function dahu_role_manager_add_logout_menu() {
 	global $menu;
 
 	$menu[99999] = array(
-		__( 'Log out', 'dahu-role-manager' ),
+		__( 'Log out', 'ubac-roles' ),
 		'read',
 		wp_logout_url(),
 		'',
