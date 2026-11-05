@@ -1,5 +1,5 @@
 === Ubac Role Manager ===
-Contributors: dahuconcept
+Contributors: ubacconcept
 Tags: role editor, menu visibility, user roles, capabilities, admin menu
 Requires at least: 6.0
 Tested up to: 7.1
@@ -12,7 +12,7 @@ Shape the admin for each role: which menus they see, which accounts they may edi
 
 == Description ==
 
-WordPress gives every role the same admin. Dahu Role Manager lets you decide, role by role, what that admin actually looks like — without writing a line of code and without touching a single capability.
+WordPress gives every role the same admin. Ubac Role Manager lets you decide, role by role, what that admin actually looks like — without writing a line of code and without touching a single capability.
 
 Everything it offers to hide is discovered from your own install at runtime. Whatever plugins you run, their menus and admin-bar items show up in the list by themselves; there is no hardcoded list to wait on.
 
@@ -44,10 +44,10 @@ The administrator is treated with particular care. Menus and submenus can never 
 
 == Installation ==
 
-1. Upload the `dahu-role-manager` folder to `wp-content/plugins/`, or install the
+1. Upload the `ubac-roles` folder to `wp-content/plugins/`, or install the
    zip from Plugins > Add New.
 2. Activate the plugin.
-3. Open **Settings > Dahu Role Manager**.
+3. Open **Settings > Ubac Role Manager**.
 
 Pick a role in the selector at the top, tick what that role should not see, and
 save. Nothing changes for any role until you configure it: a fresh install is a
@@ -82,9 +82,9 @@ No. Role slugs are compared to what is really registered rather than normalised,
 
 = Can I grant extra capabilities from code? =
 
-Yes, with the `dahu_role_manager_extra_role_caps` filter, which is empty by default:
+Yes, with the `ubac_roles_extra_role_caps` filter, which is empty by default:
 
-`add_filter( 'dahu_role_manager_extra_role_caps', function ( $caps ) {
+`add_filter( 'ubac_roles_extra_role_caps', function ( $caps ) {
     $caps['editor'] = array( 'some_plugin_manage_items' );
     return $caps;
 } );`

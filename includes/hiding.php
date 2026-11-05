@@ -2,7 +2,7 @@
 /**
  * Applying the hiding rules: menus, submenus, admin bar, and the landing page.
  *
- * @package DahuRoleManager
+ * @package UbacRoles
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -15,13 +15,13 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return void
  */
-function dahu_role_manager_apply_menu_restrictions() {
+function ubac_roles_apply_menu_restrictions() {
 
 	if ( current_user_can( 'administrator' ) ) {
 		return;
 	}
 
-	list( $hide_menus, $hide_submenus, ) = dahu_role_manager_get_user_hidden_items();
+	list( $hide_menus, $hide_submenus, ) = ubac_roles_get_user_hidden_items();
 
 	foreach ( $hide_menus as $slug ) {
 		remove_menu_page( $slug );
@@ -74,7 +74,7 @@ function dahu_role_manager_apply_menu_restrictions() {
 
 		if ( $has_dependents ) {
 
-			$GLOBALS['dahu_role_manager_css_hidden_submenus'][] = $sub_slug;
+			$GLOBALS['ubac_roles_css_hidden_submenus'][] = $sub_slug;
 
 			// Move the hidden entry to the end of the list. WordPress points
 			// the parent menu's own link at its FIRST submenu, so if that is
@@ -104,23 +104,23 @@ function dahu_role_manager_apply_menu_restrictions() {
 		remove_menu_page( $sub_slug );
 	}
 }
-add_action( 'admin_menu', 'dahu_role_manager_apply_menu_restrictions', 999 );
+add_action( 'admin_menu', 'ubac_roles_apply_menu_restrictions', 999 );
 
 /**
  * Hide, in CSS, the "carrier" submenus collected above.
  *
  * @return void
  */
-function dahu_role_manager_print_css_hidden_submenus() {
+function ubac_roles_print_css_hidden_submenus() {
 
-	if ( empty( $GLOBALS['dahu_role_manager_css_hidden_submenus'] )
-		|| ! is_array( $GLOBALS['dahu_role_manager_css_hidden_submenus'] ) ) {
+	if ( empty( $GLOBALS['ubac_roles_css_hidden_submenus'] )
+		|| ! is_array( $GLOBALS['ubac_roles_css_hidden_submenus'] ) ) {
 		return;
 	}
 
 	$selectors = array();
 
-	foreach ( array_unique( $GLOBALS['dahu_role_manager_css_hidden_submenus'] ) as $slug ) {
+	foreach ( array_unique( $GLOBALS['ubac_roles_css_hidden_submenus'] ) as $slug ) {
 
 		$href = ( false !== strpos( $slug, '.php' ) ) ? $slug : 'admin.php?page=' . $slug;
 
@@ -140,27 +140,27 @@ function dahu_role_manager_print_css_hidden_submenus() {
 	 * it fires on the concatenated part that carries the variable. Spread over
 	 * several lines, the echo therefore cannot be exempted at all. Every href
 	 * in $selectors went through esc_attr() where the list is built above. */
-	$style = '<style id="dahu-role-manager-css-hidden-submenus">'
+	$style = '<style id="ubac-roles-css-hidden-submenus">'
 		. implode( ', ', $selectors )
 		. '{display:none !important;}</style>' . "\n";
 
 	echo $style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every href in $selectors passed through esc_attr() where the list is built.
 }
-add_action( 'admin_head', 'dahu_role_manager_print_css_hidden_submenus' );
+add_action( 'admin_head', 'ubac_roles_print_css_hidden_submenus' );
 
 /**
  * Remove the admin-bar nodes hidden for the current user's roles.
  *
  * The admin-bar section IS available for the administrator role, unlike the
  * menu sections: hiding the admin bar takes no capability away and stays
- * reversible, because the admin sidebar is untouched, so Settings > Dahu Role
+ * reversible, because the admin sidebar is untouched, so Settings > Ubac Role
  * Manager remains reachable to switch it back off. Hiding sidebar menus could
  * hide that settings page itself, which is why those stay closed to the
  * administrator.
  *
  * @return void
  */
-function dahu_role_manager_apply_adminbar_restrictions() {
+function ubac_roles_apply_adminbar_restrictions() {
 
 	global $wp_admin_bar;
 
@@ -168,13 +168,13 @@ function dahu_role_manager_apply_adminbar_restrictions() {
 		return;
 	}
 
-	list( , , $hide_adminbar ) = dahu_role_manager_get_user_hidden_items();
+	list( , , $hide_adminbar ) = ubac_roles_get_user_hidden_items();
 
 	foreach ( $hide_adminbar as $node_id ) {
 		$wp_admin_bar->remove_node( $node_id );
 	}
 }
-add_action( 'wp_before_admin_bar_render', 'dahu_role_manager_apply_adminbar_restrictions', 999 );
+add_action( 'wp_before_admin_bar_render', 'ubac_roles_apply_adminbar_restrictions', 999 );
 
 /**
  * Hide the admin bar entirely for the roles that asked for it.
@@ -182,9 +182,9 @@ add_action( 'wp_before_admin_bar_render', 'dahu_role_manager_apply_adminbar_rest
  * @param bool $show Whether to show the admin bar.
  * @return bool
  */
-function dahu_role_manager_maybe_hide_admin_bar( $show ) {
+function ubac_roles_maybe_hide_admin_bar( $show ) {
 
-	list( , , , $hide_full_adminbar ) = dahu_role_manager_get_user_hidden_items();
+	list( , , , $hide_full_adminbar ) = ubac_roles_get_user_hidden_items();
 
 	if ( $hide_full_adminbar ) {
 		return false;
@@ -192,7 +192,7 @@ function dahu_role_manager_maybe_hide_admin_bar( $show ) {
 
 	return $show;
 }
-add_filter( 'show_admin_bar', 'dahu_role_manager_maybe_hide_admin_bar' );
+add_filter( 'show_admin_bar', 'ubac_roles_maybe_hide_admin_bar' );
 
 /**
  * CSS safety net for hiding the admin bar entirely.
@@ -214,7 +214,7 @@ add_filter( 'show_admin_bar', 'dahu_role_manager_maybe_hide_admin_bar' );
  * the same treatment:
  *
  *     add_filter(
- *         'dahu_role_manager_hidden_adminbar_css',
+ *         'ubac_roles_hidden_adminbar_css',
  *         function ( $rules ) {
  *             $rules['.my-plugin-header'] = 'top:0 !important;';
  *             return $rules;
@@ -223,9 +223,9 @@ add_filter( 'show_admin_bar', 'dahu_role_manager_maybe_hide_admin_bar' );
  *
  * @return void
  */
-function dahu_role_manager_output_full_adminbar_css() {
+function ubac_roles_output_full_adminbar_css() {
 
-	list( , , , $hide_full_adminbar ) = dahu_role_manager_get_user_hidden_items();
+	list( , , , $hide_full_adminbar ) = ubac_roles_get_user_hidden_items();
 
 	if ( ! $hide_full_adminbar ) {
 		return;
@@ -243,7 +243,7 @@ function dahu_role_manager_output_full_adminbar_css() {
 	 *
 	 * @param array<string,string> $rules CSS selector => declarations.
 	 */
-	$rules = apply_filters( 'dahu_role_manager_hidden_adminbar_css', $default_rules );
+	$rules = apply_filters( 'ubac_roles_hidden_adminbar_css', $default_rules );
 
 	if ( empty( $rules ) || ! is_array( $rules ) ) {
 		return;
@@ -263,14 +263,14 @@ function dahu_role_manager_output_full_adminbar_css() {
 	}
 
 	/* Assembled first, echoed on one line, for the reason given above. */
-	$style = '<style id="dahu-role-manager-hide-full-adminbar">'
+	$style = '<style id="ubac-roles-hide-full-adminbar">'
 		. $css
 		. '</style>' . "\n";
 
 	echo $style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- every selector and declaration passed through esc_html() where $css is built.
 }
-add_action( 'admin_head', 'dahu_role_manager_output_full_adminbar_css' );
-add_action( 'wp_head', 'dahu_role_manager_output_full_adminbar_css' );
+add_action( 'admin_head', 'ubac_roles_output_full_adminbar_css' );
+add_action( 'wp_head', 'ubac_roles_output_full_adminbar_css' );
 
 /**
  * Everything hidden for the current user, merged across all of their roles.
@@ -282,9 +282,9 @@ add_action( 'wp_head', 'dahu_role_manager_output_full_adminbar_css' );
  * @return array{0:string[],1:string[],2:string[],3:bool} Menus, submenus,
  *         admin-bar nodes, and whether the admin bar goes entirely.
  */
-function dahu_role_manager_get_user_hidden_items() {
+function ubac_roles_get_user_hidden_items() {
 
-	$settings           = get_option( DAHU_ROLE_MANAGER_OPTION, array() );
+	$settings           = get_option( UBAC_ROLES_OPTION, array() );
 	$hide_menus         = array();
 	$hide_submenus      = array();
 	$hide_adminbar      = array();
@@ -341,9 +341,9 @@ function dahu_role_manager_get_user_hidden_items() {
  *
  * @return array<string,array<string,mixed>> Role slug => settings.
  */
-function dahu_role_manager_get_current_user_role_settings() {
+function ubac_roles_get_current_user_role_settings() {
 
-	$settings = get_option( DAHU_ROLE_MANAGER_OPTION, array() );
+	$settings = get_option( UBAC_ROLES_OPTION, array() );
 
 	if ( empty( $settings ) || ! is_array( $settings ) ) {
 		return array();
@@ -376,7 +376,7 @@ function dahu_role_manager_get_current_user_role_settings() {
  *
  * @return void
  */
-function dahu_role_manager_add_logout_menu() {
+function ubac_roles_add_logout_menu() {
 
 	$user = wp_get_current_user();
 
@@ -384,7 +384,7 @@ function dahu_role_manager_add_logout_menu() {
 		return;
 	}
 
-	$settings = get_option( DAHU_ROLE_MANAGER_OPTION, array() );
+	$settings = get_option( UBAC_ROLES_OPTION, array() );
 
 	if ( empty( $settings ) || ! is_array( $settings ) ) {
 		return;
@@ -413,12 +413,12 @@ function dahu_role_manager_add_logout_menu() {
 		'read',
 		wp_logout_url(),
 		'',
-		'menu-top dahu-role-manager-logout',
-		'dahu-role-manager-logout',
+		'menu-top ubac-roles-logout',
+		'ubac-roles-logout',
 		'dashicons-exit',
 	);
 }
-add_action( 'admin_menu', 'dahu_role_manager_add_logout_menu', 1000 );
+add_action( 'admin_menu', 'ubac_roles_add_logout_menu', 1000 );
 
 /**
  * The landing page configured for a user, if any.
@@ -430,13 +430,13 @@ add_action( 'admin_menu', 'dahu_role_manager_add_logout_menu', 1000 );
  * @param WP_User|null $user The user to look up.
  * @return string The stored menu value, or an empty string.
  */
-function dahu_role_manager_get_start_menu_for_user( $user ) {
+function ubac_roles_get_start_menu_for_user( $user ) {
 
 	if ( ! $user || empty( $user->roles ) || ! is_array( $user->roles ) ) {
 		return '';
 	}
 
-	$settings = get_option( DAHU_ROLE_MANAGER_OPTION, array() );
+	$settings = get_option( UBAC_ROLES_OPTION, array() );
 
 	if ( empty( $settings ) || ! is_array( $settings ) ) {
 		return '';
@@ -460,7 +460,7 @@ function dahu_role_manager_get_start_menu_for_user( $user ) {
  * @param string $value Stored menu value.
  * @return string Admin URL.
  */
-function dahu_role_manager_build_start_menu_url( $value ) {
+function ubac_roles_build_start_menu_url( $value ) {
 
 	if ( '' === $value ) {
 		return admin_url();
@@ -497,7 +497,7 @@ function dahu_role_manager_build_start_menu_url( $value ) {
  * @param WP_User $user                  The user who just logged in.
  * @return string
  */
-function dahu_role_manager_login_redirect( $redirect_to, $requested_redirect_to, $user ) {
+function ubac_roles_login_redirect( $redirect_to, $requested_redirect_to, $user ) {
 
 	if ( ! empty( $requested_redirect_to ) ) {
 		return $redirect_to;
@@ -507,22 +507,22 @@ function dahu_role_manager_login_redirect( $redirect_to, $requested_redirect_to,
 		return $redirect_to;
 	}
 
-	$start_menu = dahu_role_manager_get_start_menu_for_user( $user );
+	$start_menu = ubac_roles_get_start_menu_for_user( $user );
 
 	if ( '' === $start_menu ) {
 		return $redirect_to;
 	}
 
-	return dahu_role_manager_build_start_menu_url( $start_menu );
+	return ubac_roles_build_start_menu_url( $start_menu );
 }
-add_filter( 'login_redirect', 'dahu_role_manager_login_redirect', 10, 3 );
+add_filter( 'login_redirect', 'ubac_roles_login_redirect', 10, 3 );
 
 /**
  * Send the user to their landing page if they open the dashboard directly.
  *
  * @return void
  */
-function dahu_role_manager_redirect_dashboard_to_start_menu() {
+function ubac_roles_redirect_dashboard_to_start_menu() {
 
 	global $pagenow;
 
@@ -530,16 +530,16 @@ function dahu_role_manager_redirect_dashboard_to_start_menu() {
 		return;
 	}
 
-	$start_menu = dahu_role_manager_get_start_menu_for_user( wp_get_current_user() );
+	$start_menu = ubac_roles_get_start_menu_for_user( wp_get_current_user() );
 
 	if ( '' === $start_menu ) {
 		return;
 	}
 
-	wp_safe_redirect( dahu_role_manager_build_start_menu_url( $start_menu ) );
+	wp_safe_redirect( ubac_roles_build_start_menu_url( $start_menu ) );
 	exit;
 }
-add_action( 'admin_init', 'dahu_role_manager_redirect_dashboard_to_start_menu' );
+add_action( 'admin_init', 'ubac_roles_redirect_dashboard_to_start_menu' );
 
 /**
  * Hide back-office elements by CSS selector, per role.
@@ -554,11 +554,11 @@ add_action( 'admin_init', 'dahu_role_manager_redirect_dashboard_to_start_menu' )
  *
  * @return void
  */
-function dahu_role_manager_output_hidden_classes_css() {
+function ubac_roles_output_hidden_classes_css() {
 
 	$selectors = array();
 
-	foreach ( dahu_role_manager_get_current_user_role_settings() as $role_settings ) {
+	foreach ( ubac_roles_get_current_user_role_settings() as $role_settings ) {
 		if ( ! empty( $role_settings['hide_classes'] ) && is_array( $role_settings['hide_classes'] ) ) {
 			$selectors = array_merge( $selectors, $role_settings['hide_classes'] );
 		}
@@ -570,8 +570,8 @@ function dahu_role_manager_output_hidden_classes_css() {
 		return;
 	}
 
-	echo '<style id="dahu-role-manager-hidden-classes">'
+	echo '<style id="ubac-roles-hidden-classes">'
 		. implode( ', ', array_map( 'esc_html', $selectors ) )
 		. ' { display: none !important; }</style>' . "\n";
 }
-add_action( 'admin_head', 'dahu_role_manager_output_hidden_classes_css' );
+add_action( 'admin_head', 'ubac_roles_output_hidden_classes_css' );

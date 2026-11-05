@@ -12,19 +12,19 @@
  * Requires at least: 6.0
  * Requires PHP:      7.4
  *
- * @package DahuRoleManager
+ * @package UbacRoles
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'DAHU_ROLE_MANAGER_VERSION', '3.2.1' );
-define( 'DAHU_ROLE_MANAGER_FILE', __FILE__ );
-define( 'DAHU_ROLE_MANAGER_PATH', plugin_dir_path( __FILE__ ) );
-define( 'DAHU_ROLE_MANAGER_URL', plugin_dir_url( __FILE__ ) );
-define( 'DAHU_ROLE_MANAGER_SLUG', 'dahu-role-manager' );
+define( 'UBAC_ROLES_VERSION', '3.2.1' );
+define( 'UBAC_ROLES_FILE', __FILE__ );
+define( 'UBAC_ROLES_PATH', plugin_dir_path( __FILE__ ) );
+define( 'UBAC_ROLES_URL', plugin_dir_url( __FILE__ ) );
+define( 'UBAC_ROLES_SLUG', 'ubac-roles' );
 
 /** Option holding every per-role setting. */
-define( 'DAHU_ROLE_MANAGER_OPTION', 'dahu_role_manager_settings' );
+define( 'UBAC_ROLES_OPTION', 'ubac_roles_settings' );
 
 /* -------------------------------------------------------------------------
  * Translations
@@ -43,14 +43,14 @@ define( 'DAHU_ROLE_MANAGER_OPTION', 'dahu_role_manager_settings' );
  * plain WordPress install, and that module checks for WooCommerce itself.
  * ---------------------------------------------------------------------- */
 
-require_once DAHU_ROLE_MANAGER_PATH . 'includes/role-store.php';
-require_once DAHU_ROLE_MANAGER_PATH . 'includes/discovery.php';
-require_once DAHU_ROLE_MANAGER_PATH . 'includes/hiding.php';
-require_once DAHU_ROLE_MANAGER_PATH . 'includes/order-lock.php';
-require_once DAHU_ROLE_MANAGER_PATH . 'includes/editable-accounts.php';
-require_once DAHU_ROLE_MANAGER_PATH . 'includes/csv.php';
-require_once DAHU_ROLE_MANAGER_PATH . 'includes/roles.php';
-require_once DAHU_ROLE_MANAGER_PATH . 'includes/settings.php';
+require_once UBAC_ROLES_PATH . 'includes/role-store.php';
+require_once UBAC_ROLES_PATH . 'includes/discovery.php';
+require_once UBAC_ROLES_PATH . 'includes/hiding.php';
+require_once UBAC_ROLES_PATH . 'includes/order-lock.php';
+require_once UBAC_ROLES_PATH . 'includes/editable-accounts.php';
+require_once UBAC_ROLES_PATH . 'includes/csv.php';
+require_once UBAC_ROLES_PATH . 'includes/roles.php';
+require_once UBAC_ROLES_PATH . 'includes/settings.php';
 
 /* -------------------------------------------------------------------------
  * Plugins screen
@@ -61,7 +61,7 @@ add_filter(
 	static function ( $links ) {
 		$settings = sprintf(
 			'<a href="%s">%s</a>',
-			esc_url( admin_url( 'options-general.php?page=' . DAHU_ROLE_MANAGER_SLUG ) ),
+			esc_url( admin_url( 'options-general.php?page=' . UBAC_ROLES_SLUG ) ),
 			esc_html__( 'Settings', 'ubac-roles' )
 		);
 		array_unshift( $links, $settings );
@@ -107,7 +107,7 @@ add_filter(
  * Registered here rather than inside the admin include, because the
  * activation flag has to be set whatever else is loaded.
  */
-require_once DAHU_ROLE_MANAGER_PATH . 'includes/dahu-welcome.php';
+require_once UBAC_ROLES_PATH . 'includes/ubac-welcome.php';
 
 /*
  * The flag, not a redirect: an activation hook that redirects breaks bulk
@@ -118,21 +118,21 @@ require_once DAHU_ROLE_MANAGER_PATH . 'includes/dahu-welcome.php';
 register_activation_hook(
 	__FILE__,
 	static function () {
-		Dahu_Welcome::mark_activated( 'dahu-role-manager' );
+		Ubac_Welcome::mark_activated( 'ubac-roles' );
 	}
 );
 
 add_action(
 	'init',
 	static function () {
-		Dahu_Welcome::register(
+		Ubac_Welcome::register(
 			array(
-				'slug'       => 'dahu-role-manager',
+				'slug'       => 'ubac-roles',
 				'name'       => __( 'Role manager', 'ubac-roles' ),
 				'tagline'    => __( 'Who can do what, and what changed since last time.', 'ubac-roles' ),
-				'file'       => DAHU_ROLE_MANAGER_FILE,
-				'version'    => DAHU_ROLE_MANAGER_VERSION,
-				'textdomain' => 'dahu-role-manager',
+				'file'       => UBAC_ROLES_FILE,
+				'version'    => UBAC_ROLES_VERSION,
+				'textdomain' => 'ubac-roles',
 				'mark'       => array(
 					'view'  => '0 0 112 112',
 					'paths' => array(
@@ -160,20 +160,20 @@ add_action(
 				 * selector and the tab bar sit outside any condition, and the
 				 * tab bar is built from a fixed list.
 				 */
-				'tour_screen' => 'settings_page_dahu-role-manager',
+				'tour_screen' => 'settings_page_ubac-roles',
 				'tour'        => array(
 					array(
-						'selector' => '#dahu_role',
+						'selector' => '#ubac_role',
 						'title'    => __( 'Pick a role', 'ubac-roles' ),
 						'text'     => __( 'Everything below applies to the role chosen here.', 'ubac-roles' ),
 					),
 					array(
-						'selector' => '.dahu-rm-tabs a[href*="tab=roles"]',
+						'selector' => '.ubac-rm-tabs a[href*="tab=roles"]',
 						'title'    => __( 'Manage the roles', 'ubac-roles' ),
 						'text'     => __( 'Create, rename or delete a role.', 'ubac-roles' ),
 					),
 					array(
-						'selector' => '.dahu-rm-tabs a[href*="tab=csv"]',
+						'selector' => '.ubac-rm-tabs a[href*="tab=csv"]',
 						'title'    => __( 'Export and import', 'ubac-roles' ),
 						'text'     => __( 'Copy every setting to another shop with a CSV file.', 'ubac-roles' ),
 					),

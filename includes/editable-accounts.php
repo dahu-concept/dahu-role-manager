@@ -21,9 +21,9 @@
  * This file governs WHO is editable. The POWER to edit — the list_users,
  * edit_users and related capabilities — is granted here too, but only as the
  * direct consequence of a scope being configured; see
- * dahu_role_manager_get_account_management_general_caps().
+ * ubac_roles_get_account_management_general_caps().
  *
- * @package DahuRoleManager
+ * @package UbacRoles
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -37,7 +37,7 @@ defined( 'ABSPATH' ) || exit;
  * governs it. Sites with their own high-privilege roles can add them:
  *
  *     add_filter(
- *         'dahu_role_manager_excluded_editable_roles',
+ *         'ubac_roles_excluded_editable_roles',
  *         function ( $roles ) {
  *             $roles[] = 'my_super_admin';
  *             return $roles;
@@ -46,7 +46,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return string[]
  */
-function dahu_role_manager_get_sm_excluded_roles() {
+function ubac_roles_get_sm_excluded_roles() {
 
 	/**
 	 * Filters the roles that can never be managed by another role.
@@ -54,7 +54,7 @@ function dahu_role_manager_get_sm_excluded_roles() {
 	 * @param string[] $roles Role slugs.
 	 */
 	$roles = apply_filters(
-		'dahu_role_manager_excluded_editable_roles',
+		'ubac_roles_excluded_editable_roles',
 		array( 'administrator', 'shop_manager' )
 	);
 
@@ -65,7 +65,7 @@ function dahu_role_manager_get_sm_excluded_roles() {
  * The one place `get_userdata()` is called from, and the cache in front of it.
  *
  * WHY THIS EXISTS. One capability check on one account cost two
- * `get_userdata()` calls: `dahu_role_manager_map_meta_cap_editable()` asks for
+ * `get_userdata()` calls: `ubac_roles_map_meta_cap_editable()` asks for
  * the acting user, then for the target. WordPress renders a user list by
  * asking `delete_user`, `edit_user` and `promote_user` once per row, so a page
  * of twenty accounts asked for the same acting user sixty times over. The
@@ -76,7 +76,7 @@ function dahu_role_manager_get_sm_excluded_roles() {
  * is not an optimisation, it is a stale read waiting for its day — and what is
  * cached here is ROLES, so a stale answer grants or refuses the wrong thing.
  * The hooks that empty an entry are registered below
- * `dahu_role_manager_forget_userdata()`, and each of them is a moment at which
+ * `ubac_roles_forget_userdata()`, and each of them is a moment at which
  * a user's roles can have changed:
  *
  *   clean_user_cache   WordPress's own signal that a user object is stale;
@@ -92,7 +92,7 @@ function dahu_role_manager_get_sm_excluded_roles() {
  * @param int    $id     User id. For 'forget', 0 empties the whole cache.
  * @return WP_User|false|null The user for 'get'; null for 'forget'.
  */
-function dahu_role_manager_userdata_store( $action, $id ) {
+function ubac_roles_userdata_store( $action, $id ) {
 
 	static $cache = array();
 
@@ -126,15 +126,15 @@ function dahu_role_manager_userdata_store( $action, $id ) {
  * @param int $user_id User id.
  * @return WP_User|false
  */
-function dahu_role_manager_userdata( $user_id ) {
+function ubac_roles_userdata( $user_id ) {
 
-	return dahu_role_manager_userdata_store( 'get', $user_id );
+	return ubac_roles_userdata_store( 'get', $user_id );
 }
 
 /**
  * Forget one cached user, or every one of them.
  *
- * Called on the hooks listed on `dahu_role_manager_userdata_store()`. With no
+ * Called on the hooks listed on `ubac_roles_userdata_store()`. With no
  * argument it empties the whole cache, which is also what the test bench uses:
  * a cached answer that outlived the fixture it was given for would make a
  * bench pass over roles that had since changed.
@@ -142,16 +142,16 @@ function dahu_role_manager_userdata( $user_id ) {
  * @param int $user_id User id; 0 or absent forgets every entry.
  * @return void
  */
-function dahu_role_manager_forget_userdata( $user_id = 0 ) {
+function ubac_roles_forget_userdata( $user_id = 0 ) {
 
-	dahu_role_manager_userdata_store( 'forget', (int) $user_id );
+	ubac_roles_userdata_store( 'forget', (int) $user_id );
 }
-add_action( 'clean_user_cache', 'dahu_role_manager_forget_userdata', 10, 1 );
-add_action( 'set_user_role', 'dahu_role_manager_forget_userdata', 10, 1 );
-add_action( 'add_user_role', 'dahu_role_manager_forget_userdata', 10, 1 );
-add_action( 'remove_user_role', 'dahu_role_manager_forget_userdata', 10, 1 );
-add_action( 'profile_update', 'dahu_role_manager_forget_userdata', 10, 1 );
-add_action( 'deleted_user', 'dahu_role_manager_forget_userdata', 10, 1 );
+add_action( 'clean_user_cache', 'ubac_roles_forget_userdata', 10, 1 );
+add_action( 'set_user_role', 'ubac_roles_forget_userdata', 10, 1 );
+add_action( 'add_user_role', 'ubac_roles_forget_userdata', 10, 1 );
+add_action( 'remove_user_role', 'ubac_roles_forget_userdata', 10, 1 );
+add_action( 'profile_update', 'ubac_roles_forget_userdata', 10, 1 );
+add_action( 'deleted_user', 'ubac_roles_forget_userdata', 10, 1 );
 
 /**
  * Can this role be given an editable-accounts scope at all?
@@ -162,7 +162,7 @@ add_action( 'deleted_user', 'dahu_role_manager_forget_userdata', 10, 1 );
  * @param string $role_slug Role slug.
  * @return bool
  */
-function dahu_role_manager_role_can_manage_accounts( $role_slug ) {
+function ubac_roles_role_can_manage_accounts( $role_slug ) {
 
 	/**
 	 * Filters the roles that may never manage accounts.
@@ -170,7 +170,7 @@ function dahu_role_manager_role_can_manage_accounts( $role_slug ) {
 	 * @param string[] $forbidden Role slugs.
 	 */
 	$forbidden = apply_filters(
-		'dahu_role_manager_roles_barred_from_managing_accounts',
+		'ubac_roles_roles_barred_from_managing_accounts',
 		array( 'contributor', 'author', 'subscriber', 'customer' )
 	);
 
@@ -185,13 +185,13 @@ function dahu_role_manager_role_can_manage_accounts( $role_slug ) {
  *
  * @return string[]
  */
-function dahu_role_manager_get_sm_editable_for_current_user() {
+function ubac_roles_get_sm_editable_for_current_user() {
 
 	$union = array();
 
-	foreach ( dahu_role_manager_get_current_user_role_settings() as $role_slug => $role_settings ) {
+	foreach ( ubac_roles_get_current_user_role_settings() as $role_slug => $role_settings ) {
 
-		if ( ! dahu_role_manager_role_can_manage_accounts( $role_slug ) ) {
+		if ( ! ubac_roles_role_can_manage_accounts( $role_slug ) ) {
 			continue;
 		}
 
@@ -219,13 +219,13 @@ function dahu_role_manager_get_sm_editable_for_current_user() {
  * @param mixed $raw Submitted value.
  * @return string[]
  */
-function dahu_role_manager_sanitize_sm_editable_roles( $raw ) {
+function ubac_roles_sanitize_sm_editable_roles( $raw ) {
 
 	if ( ! is_array( $raw ) ) {
 		return array();
 	}
 
-	$excluded    = dahu_role_manager_get_sm_excluded_roles();
+	$excluded    = ubac_roles_get_sm_excluded_roles();
 	$valid_roles = array_keys( wp_roles()->roles );
 	$clean       = array();
 
@@ -250,15 +250,15 @@ function dahu_role_manager_sanitize_sm_editable_roles( $raw ) {
  *
  * @return void
  */
-function dahu_role_manager_maybe_register_sm_editable_roles_filter() {
+function ubac_roles_maybe_register_sm_editable_roles_filter() {
 
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		return;
 	}
 
-	add_filter( 'woocommerce_shop_manager_editable_roles', 'dahu_role_manager_add_sm_editable_roles' );
+	add_filter( 'woocommerce_shop_manager_editable_roles', 'ubac_roles_add_sm_editable_roles' );
 }
-add_action( 'plugins_loaded', 'dahu_role_manager_maybe_register_sm_editable_roles_filter' );
+add_action( 'plugins_loaded', 'ubac_roles_maybe_register_sm_editable_roles_filter' );
 
 /**
  * Widen the shop manager's editable roles with the configured scope.
@@ -269,9 +269,9 @@ add_action( 'plugins_loaded', 'dahu_role_manager_maybe_register_sm_editable_role
  * @param array $roles Roles WooCommerce considers editable.
  * @return array
  */
-function dahu_role_manager_add_sm_editable_roles( $roles ) {
+function ubac_roles_add_sm_editable_roles( $roles ) {
 
-	$extra_roles = dahu_role_manager_get_sm_editable_for_current_user();
+	$extra_roles = ubac_roles_get_sm_editable_for_current_user();
 
 	if ( empty( $extra_roles ) ) {
 		return $roles;
@@ -290,7 +290,7 @@ function dahu_role_manager_add_sm_editable_roles( $roles ) {
  * @param array $all_roles Roles core considers editable.
  * @return array
  */
-function dahu_role_manager_filter_editable_roles( $all_roles ) {
+function ubac_roles_filter_editable_roles( $all_roles ) {
 
 	if ( current_user_can( 'administrator' ) ) {
 		return $all_roles;
@@ -302,7 +302,7 @@ function dahu_role_manager_filter_editable_roles( $all_roles ) {
 		return $all_roles;
 	}
 
-	$union = dahu_role_manager_get_sm_editable_for_current_user();
+	$union = ubac_roles_get_sm_editable_for_current_user();
 
 	if ( empty( $union ) ) {
 		return $all_roles;
@@ -312,7 +312,7 @@ function dahu_role_manager_filter_editable_roles( $all_roles ) {
 
 	return array_intersect_key( $all_roles, array_flip( $allowed ) );
 }
-add_filter( 'editable_roles', 'dahu_role_manager_filter_editable_roles', 99 );
+add_filter( 'editable_roles', 'ubac_roles_filter_editable_roles', 99 );
 
 /**
  * The "primitive" capabilities needed to manage accounts at all.
@@ -331,7 +331,7 @@ add_filter( 'editable_roles', 'dahu_role_manager_filter_editable_roles', 99 );
  *
  * @return string[]
  */
-function dahu_role_manager_get_account_management_general_caps() {
+function ubac_roles_get_account_management_general_caps() {
 	return array( 'list_users', 'edit_users', 'create_users', 'delete_users', 'promote_users' );
 }
 
@@ -345,11 +345,11 @@ function dahu_role_manager_get_account_management_general_caps() {
  * @param int   $user_id The user being tested.
  * @return array
  */
-function dahu_role_manager_maybe_grant_account_management_cap( $caps, $user_id ) {
+function ubac_roles_maybe_grant_account_management_cap( $caps, $user_id ) {
 
-	$user = dahu_role_manager_userdata( $user_id );
+	$user = ubac_roles_userdata( $user_id );
 
-	if ( ! dahu_role_manager_user_has_editable_scope( $user ) ) {
+	if ( ! ubac_roles_user_has_editable_scope( $user ) ) {
 		return $caps;
 	}
 
@@ -365,13 +365,13 @@ function dahu_role_manager_maybe_grant_account_management_cap( $caps, $user_id )
  * @param WP_User|false|null $user The user to test.
  * @return bool
  */
-function dahu_role_manager_user_has_editable_scope( $user ) {
+function ubac_roles_user_has_editable_scope( $user ) {
 
 	if ( ! $user || empty( $user->roles ) || in_array( 'administrator', (array) $user->roles, true ) ) {
 		return false;
 	}
 
-	$settings = get_option( DAHU_ROLE_MANAGER_OPTION, array() );
+	$settings = get_option( UBAC_ROLES_OPTION, array() );
 
 	if ( ! is_array( $settings ) ) {
 		return false;
@@ -379,7 +379,7 @@ function dahu_role_manager_user_has_editable_scope( $user ) {
 
 	foreach ( (array) $user->roles as $role_slug ) {
 
-		if ( ! dahu_role_manager_role_can_manage_accounts( $role_slug ) ) {
+		if ( ! ubac_roles_role_can_manage_accounts( $role_slug ) ) {
 			continue;
 		}
 
@@ -417,16 +417,16 @@ function dahu_role_manager_user_has_editable_scope( $user ) {
  * @param WP_User $user    The user being tested.
  * @return array
  */
-function dahu_role_manager_grant_account_primitive_caps( $allcaps, $caps, $args, $user ) {
+function ubac_roles_grant_account_primitive_caps( $allcaps, $caps, $args, $user ) {
 
-	$general = dahu_role_manager_get_account_management_general_caps();
+	$general = ubac_roles_get_account_management_general_caps();
 
 	// Only do the work when one of ours is actually being asked for.
 	if ( empty( array_intersect( (array) $caps, $general ) ) ) {
 		return $allcaps;
 	}
 
-	if ( ! dahu_role_manager_user_has_editable_scope( $user ) ) {
+	if ( ! ubac_roles_user_has_editable_scope( $user ) ) {
 		return $allcaps;
 	}
 
@@ -436,7 +436,7 @@ function dahu_role_manager_grant_account_primitive_caps( $allcaps, $caps, $args,
 
 	return $allcaps;
 }
-add_filter( 'user_has_cap', 'dahu_role_manager_grant_account_primitive_caps', 10, 4 );
+add_filter( 'user_has_cap', 'ubac_roles_grant_account_primitive_caps', 10, 4 );
 
 /**
  * WooCommerce's map_meta_cap equivalent, for every manager role.
@@ -457,17 +457,17 @@ add_filter( 'user_has_cap', 'dahu_role_manager_grant_account_primitive_caps', 10
  * @param array  $args    Arguments; $args[0] is the target user id.
  * @return array
  */
-function dahu_role_manager_map_meta_cap_editable( $caps, $cap, $user_id, $args ) {
+function ubac_roles_map_meta_cap_editable( $caps, $cap, $user_id, $args ) {
 
-	if ( in_array( $cap, dahu_role_manager_get_account_management_general_caps(), true ) ) {
-		return dahu_role_manager_maybe_grant_account_management_cap( $caps, $user_id );
+	if ( in_array( $cap, ubac_roles_get_account_management_general_caps(), true ) ) {
+		return ubac_roles_maybe_grant_account_management_cap( $caps, $user_id );
 	}
 
 	if ( ! in_array( $cap, array( 'edit_user', 'delete_user', 'promote_user' ), true ) || empty( $args[0] ) ) {
 		return $caps;
 	}
 
-	$current_user = dahu_role_manager_userdata( $user_id );
+	$current_user = ubac_roles_userdata( $user_id );
 
 	if ( ! $current_user || empty( $current_user->roles ) ) {
 		return $caps;
@@ -481,13 +481,13 @@ function dahu_role_manager_map_meta_cap_editable( $caps, $cap, $user_id, $args )
 
 	// The scope configured for THIS user, who is not necessarily the current
 	// one: map_meta_cap can be called for any user id.
-	$settings = get_option( DAHU_ROLE_MANAGER_OPTION, array() );
+	$settings = get_option( UBAC_ROLES_OPTION, array() );
 	$union    = array();
 
 	if ( is_array( $settings ) ) {
 		foreach ( $current_roles as $role_slug ) {
 
-			if ( ! dahu_role_manager_role_can_manage_accounts( $role_slug ) ) {
+			if ( ! ubac_roles_role_can_manage_accounts( $role_slug ) ) {
 				continue;
 			}
 
@@ -507,7 +507,7 @@ function dahu_role_manager_map_meta_cap_editable( $caps, $cap, $user_id, $args )
 		return $caps;
 	}
 
-	$target = dahu_role_manager_userdata( (int) $args[0] );
+	$target = ubac_roles_userdata( (int) $args[0] );
 
 	if ( ! $target ) {
 		return $caps;
@@ -524,4 +524,4 @@ function dahu_role_manager_map_meta_cap_editable( $caps, $cap, $user_id, $args )
 
 	return $caps;
 }
-add_filter( 'map_meta_cap', 'dahu_role_manager_map_meta_cap_editable', 99, 4 );
+add_filter( 'map_meta_cap', 'ubac_roles_map_meta_cap_editable', 99, 4 );

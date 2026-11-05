@@ -2,7 +2,7 @@
 /**
  * Role management: duplicate, rename, delete.
  *
- * @package DahuRoleManager
+ * @package UbacRoles
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return string[]
  */
-function dahu_role_manager_get_reserved_role_slugs() {
+function ubac_roles_get_reserved_role_slugs() {
     return ['administrator', 'editor', 'author', 'contributor', 'subscriber'];
 }
 
@@ -27,9 +27,9 @@ function dahu_role_manager_get_reserved_role_slugs() {
  *
  * @return string[]
  */
-function dahu_role_manager_get_protected_role_slugs() {
+function ubac_roles_get_protected_role_slugs() {
     $protected = array_merge(
-        dahu_role_manager_get_reserved_role_slugs(),
+        ubac_roles_get_reserved_role_slugs(),
         ['shop_manager', 'customer']
     );
 
@@ -47,8 +47,8 @@ function dahu_role_manager_get_protected_role_slugs() {
  * @param string $role_slug Role slug.
  * @return bool
  */
-function dahu_role_manager_role_is_manageable($role_slug) {
-    return !in_array($role_slug, dahu_role_manager_get_protected_role_slugs(), true);
+function ubac_roles_role_is_manageable($role_slug) {
+    return !in_array($role_slug, ubac_roles_get_protected_role_slugs(), true);
 }
 
 /**
@@ -57,7 +57,7 @@ function dahu_role_manager_role_is_manageable($role_slug) {
  * @param string $role_slug Role slug.
  * @return int
  */
-function dahu_role_manager_count_users_for_role($role_slug) {
+function ubac_roles_count_users_for_role($role_slug) {
     $counts = count_users();
     if (empty($counts['avail_roles']) || !isset($counts['avail_roles'][$role_slug])) {
         return 0;
@@ -80,7 +80,7 @@ function dahu_role_manager_count_users_for_role($role_slug) {
  * @param string $details   Free-form extra context.
  * @return void
  */
-function dahu_role_manager_log_role_action($action, $role_slug, $details = '') {
+function ubac_roles_log_role_action($action, $role_slug, $details = '') {
 
     if (!defined('WP_DEBUG_LOG') || !WP_DEBUG_LOG) {
         return;
@@ -91,8 +91,8 @@ function dahu_role_manager_log_role_action($action, $role_slug, $details = '') {
 
     // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Deliberate audit trail, gated on WP_DEBUG_LOG.
     error_log(sprintf(
-        '[Dahu Role Manager v%s] %s UTC | action=%s | role=%s | by=%s%s',
-        DAHU_ROLE_MANAGER_VERSION,
+        '[Ubac Role Manager v%s] %s UTC | action=%s | role=%s | by=%s%s',
+        UBAC_ROLES_VERSION,
         gmdate('Y-m-d H:i:s'),
         $action,
         $role_slug,
@@ -108,13 +108,13 @@ function dahu_role_manager_log_role_action($action, $role_slug, $details = '') {
  * @param string $slug    Role the message is about.
  * @return string
  */
-function dahu_role_manager_manage_redirect_url($message = '', $slug = '') {
-    $url = admin_url('options-general.php?page=' . DAHU_ROLE_MANAGER_SLUG . '&tab=roles');
+function ubac_roles_manage_redirect_url($message = '', $slug = '') {
+    $url = admin_url('options-general.php?page=' . UBAC_ROLES_SLUG . '&tab=roles');
     if ($message !== '') {
-        $url = add_query_arg('dahu_role_manager_role_msg', $message, $url);
+        $url = add_query_arg('ubac_roles_role_msg', $message, $url);
     }
     if ($slug !== '') {
-        $url = add_query_arg('dahu_role_manager_role_ref', rawurlencode($slug), $url);
+        $url = add_query_arg('ubac_roles_role_ref', rawurlencode($slug), $url);
     }
     return $url;
 }
@@ -127,21 +127,21 @@ function dahu_role_manager_manage_redirect_url($message = '', $slug = '') {
  *
  * @return void
  */
-add_action('admin_post_dahu_role_manager_create_role', 'dahu_role_manager_handle_create_role');
-function dahu_role_manager_handle_create_role() {
+add_action('admin_post_ubac_roles_create_role', 'ubac_roles_handle_create_role');
+function ubac_roles_handle_create_role() {
     if (!current_user_can('manage_options')) {
         wp_die(esc_html__('You are not allowed to manage roles.', 'ubac-roles'));
     }
-    check_admin_referer('dahu_role_manager_create_role');
+    check_admin_referer('ubac_roles_create_role');
 
     // An explicit is_string() on every field: a forged POST can send an
     // array, which trim() and sanitize_text_field() cannot handle.
-    $source = (isset($_POST['dahu_source_role']) && is_string($_POST['dahu_source_role']))
-        ? wp_unslash($_POST['dahu_source_role']) : '';
-    $label = (isset($_POST['dahu_new_role_label']) && is_string($_POST['dahu_new_role_label']))
-        ? sanitize_text_field(wp_unslash($_POST['dahu_new_role_label'])) : '';
-    $slug = (isset($_POST['dahu_new_role_slug']) && is_string($_POST['dahu_new_role_slug']))
-        ? strtolower(trim(wp_unslash($_POST['dahu_new_role_slug']))) : '';
+    $source = (isset($_POST['ubac_source_role']) && is_string($_POST['ubac_source_role']))
+        ? wp_unslash($_POST['ubac_source_role']) : '';
+    $label = (isset($_POST['ubac_new_role_label']) && is_string($_POST['ubac_new_role_label']))
+        ? sanitize_text_field(wp_unslash($_POST['ubac_new_role_label'])) : '';
+    $slug = (isset($_POST['ubac_new_role_slug']) && is_string($_POST['ubac_new_role_slug']))
+        ? strtolower(trim(wp_unslash($_POST['ubac_new_role_slug']))) : '';
 
     // Derive the slug from the display name when none was typed.
     if ($slug === '' && $label !== '') {
@@ -153,33 +153,33 @@ function dahu_role_manager_handle_create_role() {
     // with nothing to stop it.
     if (!is_string($source) || $source === '' || $source === 'administrator'
         || !in_array($source, array_keys(wp_roles()->roles), true)) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_source'));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_source'));
         exit;
     }
 
     if ($label === '') {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_label'));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_label'));
         exit;
     }
 
     if ($slug === '' || !preg_match('/^[a-z0-9_]+$/', $slug)) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_slug', $slug));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_slug', $slug));
         exit;
     }
 
-    if (in_array($slug, dahu_role_manager_get_reserved_role_slugs(), true)) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_reserved', $slug));
+    if (in_array($slug, ubac_roles_get_reserved_role_slugs(), true)) {
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_reserved', $slug));
         exit;
     }
 
     if (get_role($slug) !== null) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_exists', $slug));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_exists', $slug));
         exit;
     }
 
     $source_role = get_role($source);
     if (!$source_role) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_source'));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_source'));
         exit;
     }
 
@@ -189,28 +189,28 @@ function dahu_role_manager_handle_create_role() {
     // add_role() rewrites the whole roles option from the copy in memory:
     // start from what the database really holds, or a role created since that
     // copy was cached would be erased. See includes/role-store.php.
-    if (!dahu_role_manager_reload_roles_from_db()) {
+    if (!ubac_roles_reload_roles_from_db()) {
         // The database read came back empty: writing from it would wipe every
         // role on the site. Refuse rather than guess.
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_create', $slug));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_create', $slug));
         exit;
     }
 
     // The reloaded copy may already know this slug.
     if (get_role($slug) !== null) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_exists', $slug));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_exists', $slug));
         exit;
     }
 
     $created = add_role($slug, $label, $capabilities);
     if (!$created) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_create', $slug));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_create', $slug));
         exit;
     }
 
-    dahu_role_manager_log_role_action('create', $slug, 'source=' . $source . ' | label=' . $label . ' | caps=' . count($capabilities));
+    ubac_roles_log_role_action('create', $slug, 'source=' . $source . ' | label=' . $label . ' | caps=' . count($capabilities));
 
-    wp_safe_redirect(dahu_role_manager_manage_redirect_url('created', $slug));
+    wp_safe_redirect(ubac_roles_manage_redirect_url('created', $slug));
     exit;
 }
 
@@ -223,40 +223,40 @@ function dahu_role_manager_handle_create_role() {
  *
  * @return void
  */
-add_action('admin_post_dahu_role_manager_rename_role', 'dahu_role_manager_handle_rename_role');
-function dahu_role_manager_handle_rename_role() {
+add_action('admin_post_ubac_roles_rename_role', 'ubac_roles_handle_rename_role');
+function ubac_roles_handle_rename_role() {
     if (!current_user_can('manage_options')) {
         wp_die(esc_html__('You are not allowed to manage roles.', 'ubac-roles'));
     }
-    check_admin_referer('dahu_role_manager_rename_role');
+    check_admin_referer('ubac_roles_rename_role');
 
-    $slug = (isset($_POST['dahu_role_slug']) && is_string($_POST['dahu_role_slug']))
-        ? wp_unslash($_POST['dahu_role_slug']) : '';
-    $label = (isset($_POST['dahu_role_label']) && is_string($_POST['dahu_role_label']))
-        ? sanitize_text_field(wp_unslash($_POST['dahu_role_label'])) : '';
+    $slug = (isset($_POST['ubac_role_slug']) && is_string($_POST['ubac_role_slug']))
+        ? wp_unslash($_POST['ubac_role_slug']) : '';
+    $label = (isset($_POST['ubac_role_label']) && is_string($_POST['ubac_role_label']))
+        ? sanitize_text_field(wp_unslash($_POST['ubac_role_label'])) : '';
 
-    if ($slug === '' || get_role($slug) === null || !dahu_role_manager_role_is_manageable($slug)) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_protected', $slug));
+    if ($slug === '' || get_role($slug) === null || !ubac_roles_role_is_manageable($slug)) {
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_protected', $slug));
         exit;
     }
 
     if ($label === '') {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_label', $slug));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_label', $slug));
         exit;
     }
 
     // This write rewrites the whole roles option: start from what the database
     // really holds, or roles created since the cached copy would be erased.
     // See includes/role-store.php.
-    if (!dahu_role_manager_reload_roles_from_db()) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_unreadable', $slug));
+    if (!ubac_roles_reload_roles_from_db()) {
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_unreadable', $slug));
         exit;
     }
 
     // Refused when the reloaded copy has no such role: renaming it would put
     // a role back that the database no longer has.
     if (get_role($slug) === null) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_vanished', $slug));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_vanished', $slug));
         exit;
     }
 
@@ -270,9 +270,9 @@ function dahu_role_manager_handle_rename_role() {
     $wp_roles->role_names[$slug] = $label;
     update_option($wp_roles->role_key, $wp_roles->roles);
 
-    dahu_role_manager_log_role_action('rename', $slug, 'label=' . $label);
+    ubac_roles_log_role_action('rename', $slug, 'label=' . $label);
 
-    wp_safe_redirect(dahu_role_manager_manage_redirect_url('renamed', $slug));
+    wp_safe_redirect(ubac_roles_manage_redirect_url('renamed', $slug));
     exit;
 }
 
@@ -284,25 +284,25 @@ function dahu_role_manager_handle_rename_role() {
  *
  * @return void
  */
-add_action('admin_post_dahu_role_manager_delete_role', 'dahu_role_manager_handle_delete_role');
-function dahu_role_manager_handle_delete_role() {
+add_action('admin_post_ubac_roles_delete_role', 'ubac_roles_handle_delete_role');
+function ubac_roles_handle_delete_role() {
     if (!current_user_can('manage_options')) {
         wp_die(esc_html__('You are not allowed to manage roles.', 'ubac-roles'));
     }
-    check_admin_referer('dahu_role_manager_delete_role');
+    check_admin_referer('ubac_roles_delete_role');
 
-    $slug = (isset($_POST['dahu_role_slug']) && is_string($_POST['dahu_role_slug']))
-        ? wp_unslash($_POST['dahu_role_slug']) : '';
+    $slug = (isset($_POST['ubac_role_slug']) && is_string($_POST['ubac_role_slug']))
+        ? wp_unslash($_POST['ubac_role_slug']) : '';
 
-    if ($slug === '' || get_role($slug) === null || !dahu_role_manager_role_is_manageable($slug)) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_protected', $slug));
+    if ($slug === '' || get_role($slug) === null || !ubac_roles_role_is_manageable($slug)) {
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_protected', $slug));
         exit;
     }
 
     // Server-side guard: the JavaScript confirmation is not a check.
-    $user_count = dahu_role_manager_count_users_for_role($slug);
+    $user_count = ubac_roles_count_users_for_role($slug);
     if ($user_count > 0) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_has_users', $slug));
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_has_users', $slug));
         exit;
     }
 
@@ -310,27 +310,27 @@ function dahu_role_manager_handle_delete_role() {
     // start from what the database really holds, or roles created since that
     // copy was cached would disappear along with this one.
     // See includes/role-store.php.
-    if (!dahu_role_manager_reload_roles_from_db()) {
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('error_unreadable', $slug));
+    if (!ubac_roles_reload_roles_from_db()) {
+        wp_safe_redirect(ubac_roles_manage_redirect_url('error_unreadable', $slug));
         exit;
     }
 
     if (get_role($slug) === null) {
         // Already gone from the database. Nothing to remove, but the settings
         // and the editable-accounts lists still name it.
-        dahu_role_manager_forget_role_settings($slug);
-        dahu_role_manager_log_role_action('delete', $slug, 'already absent from database');
-        wp_safe_redirect(dahu_role_manager_manage_redirect_url('deleted', $slug));
+        ubac_roles_forget_role_settings($slug);
+        ubac_roles_log_role_action('delete', $slug, 'already absent from database');
+        wp_safe_redirect(ubac_roles_manage_redirect_url('deleted', $slug));
         exit;
     }
 
     remove_role($slug);
 
-    dahu_role_manager_forget_role_settings($slug);
+    ubac_roles_forget_role_settings($slug);
 
-    dahu_role_manager_log_role_action('delete', $slug, 'users=0');
+    ubac_roles_log_role_action('delete', $slug, 'users=0');
 
-    wp_safe_redirect(dahu_role_manager_manage_redirect_url('deleted', $slug));
+    wp_safe_redirect(ubac_roles_manage_redirect_url('deleted', $slug));
     exit;
 }
 
@@ -352,9 +352,9 @@ function dahu_role_manager_handle_delete_role() {
  * @param string $slug Role being deleted.
  * @return void
  */
-function dahu_role_manager_forget_role_settings($slug) {
+function ubac_roles_forget_role_settings($slug) {
 
-    $settings = get_option(DAHU_ROLE_MANAGER_OPTION, []);
+    $settings = get_option(UBAC_ROLES_OPTION, []);
     if (!is_array($settings)) {
         return;
     }
@@ -378,7 +378,7 @@ function dahu_role_manager_forget_role_settings($slug) {
     }
 
     if ($changed) {
-        update_option(DAHU_ROLE_MANAGER_OPTION, $settings);
+        update_option(UBAC_ROLES_OPTION, $settings);
     }
 }
 
@@ -387,13 +387,13 @@ function dahu_role_manager_forget_role_settings($slug) {
  *
  * @return void
  */
-function dahu_role_manager_render_roles_tab_notices() {
-    if (!isset($_GET['dahu_role_manager_role_msg'])) {
+function ubac_roles_render_roles_tab_notices() {
+    if (!isset($_GET['ubac_roles_role_msg'])) {
         return;
     }
 
-    $code = sanitize_key($_GET['dahu_role_manager_role_msg']);
-    $ref = isset($_GET['dahu_role_manager_role_ref']) ? sanitize_text_field(wp_unslash($_GET['dahu_role_manager_role_ref'])) : '';
+    $code = sanitize_key($_GET['ubac_roles_role_msg']);
+    $ref = isset($_GET['ubac_roles_role_ref']) ? sanitize_text_field(wp_unslash($_GET['ubac_roles_role_ref'])) : '';
 
     $messages = [
         /* translators: %s: role display name. */
@@ -442,8 +442,8 @@ function dahu_role_manager_render_roles_tab_notices() {
  *
  * @return void
  */
-function dahu_role_manager_render_saved_notice() {
-    if (!isset($_GET['dahu_role_manager_saved'])) {
+function ubac_roles_render_saved_notice() {
+    if (!isset($_GET['ubac_roles_saved'])) {
         return;
     }
 
@@ -451,7 +451,7 @@ function dahu_role_manager_render_saved_notice() {
         'role' => __('Settings saved for this role.', 'ubac-roles'),
     ];
 
-    $saved_key = sanitize_key($_GET['dahu_role_manager_saved']);
+    $saved_key = sanitize_key($_GET['ubac_roles_saved']);
     if (!isset($saved_messages[$saved_key])) {
         return;
     }
@@ -468,16 +468,16 @@ function dahu_role_manager_render_saved_notice() {
  * @param string $current_tab The tab currently open.
  * @return void
  */
-function dahu_role_manager_render_tabs_nav($current_tab) {
+function ubac_roles_render_tabs_nav($current_tab) {
     $tabs = [
         'interface' => __('Role interface', 'ubac-roles'),
         'roles'     => __('Role management', 'ubac-roles'),
         'csv'       => __('Export / Import', 'ubac-roles'),
     ];
     ?>
-    <h2 class="nav-tab-wrapper dahu-rm-tabs">
+    <h2 class="nav-tab-wrapper ubac-rm-tabs">
         <?php foreach ($tabs as $slug => $label):
-            $url = admin_url('options-general.php?page=' . DAHU_ROLE_MANAGER_SLUG . '');
+            $url = admin_url('options-general.php?page=' . UBAC_ROLES_SLUG . '');
             if ($slug !== 'interface') {
                 $url = add_query_arg('tab', $slug, $url);
             }
@@ -500,12 +500,12 @@ function dahu_role_manager_render_tabs_nav($current_tab) {
  *
  * @return void
  */
-function dahu_role_manager_render_csv_import_notices() {
-    if (!isset($_GET['dahu_role_manager_import'])) {
+function ubac_roles_render_csv_import_notices() {
+    if (!isset($_GET['ubac_roles_import'])) {
         return;
     }
 
-    $status = sanitize_key($_GET['dahu_role_manager_import']);
+    $status = sanitize_key($_GET['ubac_roles_import']);
     $messages = [
         'success'       => ['success', __('Import complete. The settings were replaced by the contents of the CSV file.', 'ubac-roles')],
         'error_no_file' => ['error', __('No file was received.', 'ubac-roles')],
@@ -530,10 +530,10 @@ function dahu_role_manager_render_csv_import_notices() {
  *
  * @return void
  */
-function dahu_role_manager_render_csv_tab() {
+function ubac_roles_render_csv_tab() {
     ?>
-    <div class="dahu-ui-card">
-    <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Export / import the settings', 'ubac-roles'); ?></h2></div>
+    <div class="ubac-ui-card">
+    <div class="ubac-ui-card__head"><h2 class="ubac-ui-card__title"><?php esc_html_e('Export / import the settings', 'ubac-roles'); ?></h2></div>
     <p>
         <?php
         printf(
@@ -543,22 +543,22 @@ function dahu_role_manager_render_csv_tab() {
         );
         ?>
     </p>
-    <div class="dahu-rm-tools">
+    <div class="ubac-rm-tools">
         <div>
             <h3><?php esc_html_e('Export the settings', 'ubac-roles'); ?></h3>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <input type="hidden" name="action" value="dahu_role_manager_export_csv" />
-                <?php wp_nonce_field('dahu_role_manager_export_csv'); ?>
+                <input type="hidden" name="action" value="ubac_roles_export_csv" />
+                <?php wp_nonce_field('ubac_roles_export_csv'); ?>
                 <?php submit_button(__('Download the CSV', 'ubac-roles'), 'secondary', 'submit', false); ?>
             </form>
         </div>
         <div>
             <h3><?php esc_html_e('Import settings', 'ubac-roles'); ?></h3>
-            <p class="dahu-rm-warning"><?php esc_html_e('⚠️ An import completely replaces the current settings of every role.', 'ubac-roles'); ?></p>
+            <p class="ubac-rm-warning"><?php esc_html_e('⚠️ An import completely replaces the current settings of every role.', 'ubac-roles'); ?></p>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="dahu_role_manager_import_csv" />
-                <?php wp_nonce_field('dahu_role_manager_import_csv'); ?>
-                <input type="file" name="dahu_role_manager_csv_file" accept=".csv" required />
+                <input type="hidden" name="action" value="ubac_roles_import_csv" />
+                <?php wp_nonce_field('ubac_roles_import_csv'); ?>
+                <input type="file" name="ubac_roles_csv_file" accept=".csv" required />
                 <?php submit_button(__('Import the CSV', 'ubac-roles'), 'secondary', 'submit', false); ?>
             </form>
         </div>
@@ -572,13 +572,13 @@ function dahu_role_manager_render_csv_tab() {
  *
  * @return void
  */
-function dahu_role_manager_render_roles_tab() {
+function ubac_roles_render_roles_tab() {
     global $wp_roles;
     $all_roles = $wp_roles->roles;
-    $reserved = dahu_role_manager_get_reserved_role_slugs();
+    $reserved = ubac_roles_get_reserved_role_slugs();
     ?>
-    <div class="dahu-ui-card">
-    <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Create a role by duplication', 'ubac-roles'); ?></h2></div>
+    <div class="ubac-ui-card">
+    <div class="ubac-ui-card__head"><h2 class="ubac-ui-card__title"><?php esc_html_e('Create a role by duplication', 'ubac-roles'); ?></h2></div>
     <p>
         <?php
         printf(
@@ -588,7 +588,7 @@ function dahu_role_manager_render_roles_tab() {
         );
         ?>
     </p>
-    <p class="dahu-rm-hint">
+    <p class="ubac-rm-hint">
         <?php
         printf(
             /* translators: %s: the bolded name of the Administrator role. */
@@ -598,14 +598,14 @@ function dahu_role_manager_render_roles_tab() {
         ?>
     </p>
 
-    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="dahu-rm-form">
-        <input type="hidden" name="action" value="dahu_role_manager_create_role" />
-        <?php wp_nonce_field('dahu_role_manager_create_role'); ?>
+    <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="ubac-rm-form">
+        <input type="hidden" name="action" value="ubac_roles_create_role" />
+        <?php wp_nonce_field('ubac_roles_create_role'); ?>
         <table class="form-table">
             <tr>
-                <th scope="row"><label for="dahu_source_role"><?php esc_html_e('Source role', 'ubac-roles'); ?></label></th>
+                <th scope="row"><label for="ubac_source_role"><?php esc_html_e('Source role', 'ubac-roles'); ?></label></th>
                 <td>
-                    <select name="dahu_source_role" id="dahu_source_role" required>
+                    <select name="ubac_source_role" id="ubac_source_role" required>
                         <?php foreach ($all_roles as $slug => $info):
                             if ($slug === 'administrator') {
                                 continue;
@@ -618,10 +618,10 @@ function dahu_role_manager_render_roles_tab() {
                 </td>
             </tr>
             <tr>
-                <th scope="row"><label for="dahu_new_role_label"><?php esc_html_e('Display name', 'ubac-roles'); ?></label></th>
+                <th scope="row"><label for="ubac_new_role_label"><?php esc_html_e('Display name', 'ubac-roles'); ?></label></th>
                 <td>
-                    <input type="text" name="dahu_new_role_label" id="dahu_new_role_label" class="regular-text" required
-                           oninput="dahuRoleManagerSlugify(this.value)" />
+                    <input type="text" name="ubac_new_role_label" id="ubac_new_role_label" class="regular-text" required
+                           oninput="ubacRoleManagerSlugify(this.value)" />
                     <p class="description">
                         <?php
                         printf(
@@ -634,9 +634,9 @@ function dahu_role_manager_render_roles_tab() {
                 </td>
             </tr>
             <tr>
-                <th scope="row"><label for="dahu_new_role_slug"><?php esc_html_e('Identifier', 'ubac-roles'); ?></label></th>
+                <th scope="row"><label for="ubac_new_role_slug"><?php esc_html_e('Identifier', 'ubac-roles'); ?></label></th>
                 <td>
-                    <input type="text" name="dahu_new_role_slug" id="dahu_new_role_slug" class="regular-text"
+                    <input type="text" name="ubac_new_role_slug" id="ubac_new_role_slug" class="regular-text"
                            pattern="[a-z0-9_]+" required />
                     <p class="description">
                         <?php
@@ -654,9 +654,9 @@ function dahu_role_manager_render_roles_tab() {
     </form>
     </div>
 
-    <div class="dahu-ui-card">
-    <div class="dahu-ui-card__head"><h2 class="dahu-ui-card__title"><?php esc_html_e('Existing roles', 'ubac-roles'); ?></h2></div>
-    <p class="dahu-rm-hint">
+    <div class="ubac-ui-card">
+    <div class="ubac-ui-card__head"><h2 class="ubac-ui-card__title"><?php esc_html_e('Existing roles', 'ubac-roles'); ?></h2></div>
+    <p class="ubac-rm-hint">
         <?php
         printf(
             /* translators: %s: the bolded words "display name". */
@@ -666,20 +666,20 @@ function dahu_role_manager_render_roles_tab() {
         ?>
     </p>
 
-    <table class="widefat striped dahu-rm-table dahu-rm-table--wide">
+    <table class="widefat striped ubac-rm-table ubac-rm-table--wide">
         <thead>
             <tr>
                 <th><?php esc_html_e('Display name', 'ubac-roles'); ?></th>
-                <th class="dahu-rm-col-id"><?php esc_html_e('Identifier', 'ubac-roles'); ?></th>
-                <th class="dahu-rm-col-count"><?php esc_html_e('Users', 'ubac-roles'); ?></th>
-                <th class="dahu-rm-col-count"><?php esc_html_e('Capabilities', 'ubac-roles'); ?></th>
-                <th class="dahu-rm-col-actions"><?php esc_html_e('Actions', 'ubac-roles'); ?></th>
+                <th class="ubac-rm-col-id"><?php esc_html_e('Identifier', 'ubac-roles'); ?></th>
+                <th class="ubac-rm-col-count"><?php esc_html_e('Users', 'ubac-roles'); ?></th>
+                <th class="ubac-rm-col-count"><?php esc_html_e('Capabilities', 'ubac-roles'); ?></th>
+                <th class="ubac-rm-col-actions"><?php esc_html_e('Actions', 'ubac-roles'); ?></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($all_roles as $slug => $info):
-                $manageable = dahu_role_manager_role_is_manageable($slug);
-                $user_count = dahu_role_manager_count_users_for_role($slug);
+                $manageable = ubac_roles_role_is_manageable($slug);
+                $user_count = ubac_roles_count_users_for_role($slug);
                 $cap_count = (!empty($info['capabilities']) && is_array($info['capabilities'])) ? count($info['capabilities']) : 0;
                 ?>
                 <tr>
@@ -689,7 +689,7 @@ function dahu_role_manager_render_roles_tab() {
                     <td><?php echo esc_html($cap_count); ?></td>
                     <td>
                         <?php if (!$manageable): ?>
-                            <em class="dahu-rm-hint">
+                            <em class="ubac-rm-hint">
                                 <?php
                                 echo in_array($slug, $reserved, true)
                                     ? esc_html__('Protected role (WordPress built-in)', 'ubac-roles')
@@ -697,24 +697,24 @@ function dahu_role_manager_render_roles_tab() {
                                 ?>
                             </em>
                         <?php else: ?>
-                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="dahu-rm-inline-form">
-                                <input type="hidden" name="action" value="dahu_role_manager_rename_role" />
-                                <input type="hidden" name="dahu_role_slug" value="<?php echo esc_attr($slug); ?>" />
-                                <?php wp_nonce_field('dahu_role_manager_rename_role'); ?>
-                                <input type="text" name="dahu_role_label" value="<?php echo esc_attr(translate_user_role($info['name'])); ?>" required class="dahu-rm-rename-input" />
-                                <button type="submit" class="dahu-ui-btn"><?php esc_html_e('Rename', 'ubac-roles'); ?></button>
+                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="ubac-rm-inline-form">
+                                <input type="hidden" name="action" value="ubac_roles_rename_role" />
+                                <input type="hidden" name="ubac_role_slug" value="<?php echo esc_attr($slug); ?>" />
+                                <?php wp_nonce_field('ubac_roles_rename_role'); ?>
+                                <input type="text" name="ubac_role_label" value="<?php echo esc_attr(translate_user_role($info['name'])); ?>" required class="ubac-rm-rename-input" />
+                                <button type="submit" class="ubac-ui-btn"><?php esc_html_e('Rename', 'ubac-roles'); ?></button>
                             </form>
-                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="dahu-rm-inline-form--bare"
-                                  onsubmit="return dahuRoleManagerConfirmDelete(this);">
-                                <input type="hidden" name="action" value="dahu_role_manager_delete_role" />
-                                <input type="hidden" name="dahu_role_slug" value="<?php echo esc_attr($slug); ?>" />
-                                <input type="hidden" name="dahu_role_users" value="<?php echo esc_attr($user_count); ?>" />
-                                <input type="hidden" name="dahu_role_name" value="<?php echo esc_attr(translate_user_role($info['name'])); ?>" />
-                                <?php wp_nonce_field('dahu_role_manager_delete_role'); ?>
-                                <button type="submit" class="dahu-ui-btn dahu-ui-btn--warn" <?php disabled($user_count > 0); ?>><?php esc_html_e('Delete', 'ubac-roles'); ?></button>
+                            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="ubac-rm-inline-form--bare"
+                                  onsubmit="return ubacRoleManagerConfirmDelete(this);">
+                                <input type="hidden" name="action" value="ubac_roles_delete_role" />
+                                <input type="hidden" name="ubac_role_slug" value="<?php echo esc_attr($slug); ?>" />
+                                <input type="hidden" name="ubac_role_users" value="<?php echo esc_attr($user_count); ?>" />
+                                <input type="hidden" name="ubac_role_name" value="<?php echo esc_attr(translate_user_role($info['name'])); ?>" />
+                                <?php wp_nonce_field('ubac_roles_delete_role'); ?>
+                                <button type="submit" class="ubac-ui-btn ubac-ui-btn--warn" <?php disabled($user_count > 0); ?>><?php esc_html_e('Delete', 'ubac-roles'); ?></button>
                             </form>
                             <?php if ($user_count > 0): ?>
-                                <p class="dahu-rm-danger">
+                                <p class="ubac-rm-danger">
                                     <?php
                                     printf(
                                         esc_html(
@@ -740,15 +740,15 @@ function dahu_role_manager_render_roles_tab() {
     </div>
 
     <script>
-    var dahuRoleManagerI18n = <?php echo wp_json_encode(array(
+    var ubacRoleManagerI18n = <?php echo wp_json_encode(array(
         /* translators: 1: role display name, 2: number of users still assigned. */
         'stillAssigned' => __('Cannot delete "%1$s": %2$s user(s) are still assigned to it. Reassign them first.', 'ubac-roles'),
         /* translators: 1: role display name, 2: role identifier. */
         'confirmDelete' => __('Permanently delete the role "%1$s" (%2$s)?', 'ubac-roles'),
         'confirmDetail' => __('No user is assigned to it. This cannot be undone.', 'ubac-roles'),
     )); ?>;
-    function dahuRoleManagerSlugify(value) {
-        var field = document.getElementById('dahu_new_role_slug');
+    function ubacRoleManagerSlugify(value) {
+        var field = document.getElementById('ubac_new_role_slug');
         if (!field || field.dataset.touched === '1') {
             return;
         }
@@ -758,30 +758,30 @@ function dahu_role_manager_render_roles_tab() {
             .replace(/^_+|_+$/g, '');
     }
     (function () {
-        var field = document.getElementById('dahu_new_role_slug');
+        var field = document.getElementById('ubac_new_role_slug');
         if (field) {
             // Once the identifier has been edited by hand, stop overwriting
             // it from the display name.
             field.addEventListener('input', function () { field.dataset.touched = '1'; });
         }
     })();
-    function dahuRoleManagerConfirmDelete(form) {
-        var name = form.querySelector('input[name="dahu_role_name"]').value;
-        var slug = form.querySelector('input[name="dahu_role_slug"]').value;
-        var users = parseInt(form.querySelector('input[name="dahu_role_users"]').value, 10) || 0;
+    function ubacRoleManagerConfirmDelete(form) {
+        var name = form.querySelector('input[name="ubac_role_name"]').value;
+        var slug = form.querySelector('input[name="ubac_role_slug"]').value;
+        var users = parseInt(form.querySelector('input[name="ubac_role_users"]').value, 10) || 0;
         if (users > 0) {
             window.alert(
-                dahuRoleManagerI18n.stillAssigned
+                ubacRoleManagerI18n.stillAssigned
                     .replace('%1$s', name)
                     .replace('%2$s', users)
             );
             return false;
         }
         return window.confirm(
-            dahuRoleManagerI18n.confirmDelete
+            ubacRoleManagerI18n.confirmDelete
                 .replace('%1$s', name)
                 .replace('%2$s', slug)
-            + '\n\n' + dahuRoleManagerI18n.confirmDetail
+            + '\n\n' + ubacRoleManagerI18n.confirmDetail
         );
     }
     </script>

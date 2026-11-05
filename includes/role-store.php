@@ -17,7 +17,7 @@
  * Scope: this reduces the risk that a write FROM THIS PLUGIN starts from a
  * stale copy. It cannot protect the option from anything else on the site.
  *
- * @package DahuRoleManager
+ * @package UbacRoles
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -30,7 +30,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return string
  */
-function dahu_role_manager_roles_option_name() {
+function ubac_roles_roles_option_name() {
 
 	global $wp_roles, $wpdb;
 
@@ -46,7 +46,7 @@ function dahu_role_manager_roles_option_name() {
  *
  * @return array<string,mixed> The stored roles, or an empty array.
  */
-function dahu_role_manager_read_roles_db() {
+function ubac_roles_read_roles_db() {
 
 	global $wpdb;
 
@@ -59,7 +59,7 @@ function dahu_role_manager_read_roles_db() {
 	$raw = $wpdb->get_var(
 		$wpdb->prepare(
 			"SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
-			dahu_role_manager_roles_option_name()
+			ubac_roles_roles_option_name()
 		)
 	);
 
@@ -80,9 +80,9 @@ function dahu_role_manager_read_roles_db() {
  *
  * @return void
  */
-function dahu_role_manager_purge_roles_cache() {
+function ubac_roles_purge_roles_cache() {
 
-	$option = dahu_role_manager_roles_option_name();
+	$option = ubac_roles_roles_option_name();
 
 	wp_cache_delete( 'alloptions', 'options' );
 	wp_cache_delete( 'notoptions', 'options' );
@@ -102,7 +102,7 @@ function dahu_role_manager_purge_roles_cache() {
  *
  * @return bool Whether the reloaded roles can be written from.
  */
-function dahu_role_manager_reload_roles_from_db() {
+function ubac_roles_reload_roles_from_db() {
 
 	$roles   = wp_roles();
 	$site_id = get_current_blog_id();
@@ -121,9 +121,9 @@ function dahu_role_manager_reload_roles_from_db() {
 		$roles->for_site( $site_id );
 	}
 
-	$db_roles = dahu_role_manager_read_roles_db();
+	$db_roles = ubac_roles_read_roles_db();
 
-	dahu_role_manager_purge_roles_cache();
+	ubac_roles_purge_roles_cache();
 
 	// And again, to load back what the database really holds now that the
 	// cache no longer stands in the way.
@@ -142,7 +142,7 @@ function dahu_role_manager_reload_roles_from_db() {
  * @param string              $cap       Capability to look for.
  * @return bool
  */
-function dahu_role_manager_db_role_has_cap( $db_roles, $role_slug, $cap ) {
+function ubac_roles_db_role_has_cap( $db_roles, $role_slug, $cap ) {
 
 	if ( ! isset( $db_roles[ $role_slug ]['capabilities'] ) || ! is_array( $db_roles[ $role_slug ]['capabilities'] ) ) {
 		return false;
@@ -170,7 +170,7 @@ function dahu_role_manager_db_role_has_cap( $db_roles, $role_slug, $cap ) {
  * @param mixed    $stored Slugs stored before this save.
  * @return string[]
  */
-function dahu_role_manager_keep_stored_unknown_roles( $clean, $stored ) {
+function ubac_roles_keep_stored_unknown_roles( $clean, $stored ) {
 
 	if ( ! is_array( $stored ) ) {
 		return $clean;

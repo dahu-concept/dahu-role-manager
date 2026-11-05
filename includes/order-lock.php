@@ -31,7 +31,7 @@
  * no longer fire from this screen, since the status is not even read there. It
  * stays active from the order list and from bulk actions.
  *
- * @package DahuRoleManager
+ * @package UbacRoles
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -45,9 +45,9 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return bool
  */
-function dahu_role_manager_completed_orders_locked() {
+function ubac_roles_completed_orders_locked() {
 
-	foreach ( dahu_role_manager_get_current_user_role_settings() as $role_settings ) {
+	foreach ( ubac_roles_get_current_user_role_settings() as $role_settings ) {
 		if ( ! empty( $role_settings['lock_completed_orders'] ) ) {
 			return true;
 		}
@@ -64,7 +64,7 @@ function dahu_role_manager_completed_orders_locked() {
  *
  * @return WC_Order|null
  */
-function dahu_role_manager_get_current_screen_order() {
+function ubac_roles_get_current_screen_order() {
 
 	if ( ! function_exists( 'wc_get_order' ) ) {
 		return null;
@@ -114,9 +114,9 @@ function dahu_role_manager_get_current_screen_order() {
  * @param WC_Order|null $order    The order object, when WooCommerce passes one.
  * @return void
  */
-function dahu_role_manager_lock_completed_order_panel_save( $order_id, $order = null ) {
+function ubac_roles_lock_completed_order_panel_save( $order_id, $order = null ) {
 
-	if ( ! dahu_role_manager_completed_orders_locked() || ! function_exists( 'wc_get_order' ) ) {
+	if ( ! ubac_roles_completed_orders_locked() || ! function_exists( 'wc_get_order' ) ) {
 		return;
 	}
 
@@ -133,7 +133,7 @@ function dahu_role_manager_lock_completed_order_panel_save( $order_id, $order = 
 		remove_action( 'woocommerce_process_shop_order_meta', $callback, $priority );
 	}
 }
-add_action( 'woocommerce_process_shop_order_meta', 'dahu_role_manager_lock_completed_order_panel_save', 1, 2 );
+add_action( 'woocommerce_process_shop_order_meta', 'ubac_roles_lock_completed_order_panel_save', 1, 2 );
 
 /**
  * LEVEL 2 — Refuse a status change away from "completed".
@@ -144,9 +144,9 @@ add_action( 'woocommerce_process_shop_order_meta', 'dahu_role_manager_lock_compl
  * @param WC_Order $order The order about to be saved.
  * @return void
  */
-function dahu_role_manager_lock_completed_order_status( $order ) {
+function ubac_roles_lock_completed_order_status( $order ) {
 
-	if ( ! $order || ! $order->get_id() || ! dahu_role_manager_completed_orders_locked() ) {
+	if ( ! $order || ! $order->get_id() || ! ubac_roles_completed_orders_locked() ) {
 		return;
 	}
 
@@ -164,19 +164,19 @@ function dahu_role_manager_lock_completed_order_status( $order ) {
 
 	if ( 'completed' === $old_status && 'completed' !== $new_status ) {
 		$order->set_status( 'completed' );
-		set_transient( 'dahu_role_manager_locked_order_notice_' . get_current_user_id(), $order->get_id(), 120 );
+		set_transient( 'ubac_roles_locked_order_notice_' . get_current_user_id(), $order->get_id(), 120 );
 	}
 }
-add_action( 'woocommerce_before_order_object_save', 'dahu_role_manager_lock_completed_order_status' );
+add_action( 'woocommerce_before_order_object_save', 'ubac_roles_lock_completed_order_status' );
 
 /**
  * Tell the user their status change was refused.
  *
  * @return void
  */
-function dahu_role_manager_locked_order_notice() {
+function ubac_roles_locked_order_notice() {
 
-	$key      = 'dahu_role_manager_locked_order_notice_' . get_current_user_id();
+	$key      = 'ubac_roles_locked_order_notice_' . get_current_user_id();
 	$order_id = get_transient( $key );
 
 	if ( ! $order_id ) {
@@ -199,7 +199,7 @@ function dahu_role_manager_locked_order_notice() {
 	</div>
 	<?php
 }
-add_action( 'admin_notices', 'dahu_role_manager_locked_order_notice' );
+add_action( 'admin_notices', 'ubac_roles_locked_order_notice' );
 
 /**
  * LEVEL 3 — Make the panel inert on screen.
@@ -225,19 +225,19 @@ add_action( 'admin_notices', 'dahu_role_manager_locked_order_notice' );
  *
  * @return void
  */
-function dahu_role_manager_lock_completed_order_panel_ui() {
+function ubac_roles_lock_completed_order_panel_ui() {
 
-	if ( ! dahu_role_manager_completed_orders_locked() ) {
+	if ( ! ubac_roles_completed_orders_locked() ) {
 		return;
 	}
 
-	$order = dahu_role_manager_get_current_screen_order();
+	$order = ubac_roles_get_current_screen_order();
 
 	if ( ! $order || 'completed' !== $order->get_status() ) {
 		return;
 	}
 	?>
-	<style id="dahu-role-manager-lock-completed-order">
+	<style id="ubac-roles-lock-completed-order">
 		#woocommerce-order-data input,
 		#woocommerce-order-data select,
 		#woocommerce-order-data textarea,
@@ -248,7 +248,7 @@ function dahu_role_manager_lock_completed_order_panel_ui() {
 	</style>
 	<script>
 	(function () {
-		function dahuLockOrderPanel() {
+		function ubacLockOrderPanel() {
 			// Falls back to #order_data when the metabox is not found by its id,
 			// so the panel stays locked even if WooCommerce ever renames the
 			// metabox that wraps it.
@@ -262,10 +262,10 @@ function dahu_role_manager_lock_completed_order_panel_ui() {
 				controls[i].disabled = true;
 			}
 		}
-		document.addEventListener('DOMContentLoaded', dahuLockOrderPanel);
-		window.addEventListener('load', dahuLockOrderPanel);
+		document.addEventListener('DOMContentLoaded', ubacLockOrderPanel);
+		window.addEventListener('load', ubacLockOrderPanel);
 	})();
 	</script>
 	<?php
 }
-add_action( 'admin_head', 'dahu_role_manager_lock_completed_order_panel_ui' );
+add_action( 'admin_head', 'ubac_roles_lock_completed_order_panel_ui' );

@@ -1,4 +1,4 @@
-# Dahu Role Manager
+# Ubac Role Manager
 
 Shape the WordPress admin for each role: which menus and admin-bar items they
 see, which accounts they may edit, where they land on login. Duplicate, rename
@@ -44,16 +44,16 @@ completed-order lock — are checked server-side.
 ## Installation
 
 Copy the folder into `wp-content/plugins/`, activate, and open
-**Settings → Dahu Role Manager**.
+**Settings → Ubac Role Manager**.
 
 ## Hooks
 
 | Hook | Type | What it does |
 |---|---|---|
-| `dahu_role_manager_extra_role_caps` | filter | Capabilities to add, keyed by role slug. Empty by default; only ever adds. |
-| `dahu_role_manager_excluded_editable_roles` | filter | Roles no other role may ever manage. Defaults to `administrator`, `shop_manager`. |
-| `dahu_role_manager_roles_barred_from_managing_accounts` | filter | Roles that may never be given an account scope. |
-| `dahu_role_manager_hidden_adminbar_css` | filter | The CSS applied when the admin bar is hidden entirely, as selector => declarations. |
+| `ubac_roles_extra_role_caps` | filter | Capabilities to add, keyed by role slug. Empty by default; only ever adds. |
+| `ubac_roles_excluded_editable_roles` | filter | Roles no other role may ever manage. Defaults to `administrator`, `shop_manager`. |
+| `ubac_roles_roles_barred_from_managing_accounts` | filter | Roles that may never be given an account scope. |
+| `ubac_roles_hidden_adminbar_css` | filter | The CSS applied when the admin bar is hidden entirely, as selector => declarations. |
 
 ## Uninstalling
 

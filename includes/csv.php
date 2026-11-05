@@ -22,7 +22,7 @@
  * BACKWARD COMPATIBILITY: an `sm_editable` row with an empty role column
  * comes from an older global format and is assigned to `shop_manager`.
  *
- * @package DahuRoleManager
+ * @package UbacRoles
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -35,7 +35,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return string[]
  */
-function dahu_role_manager_get_boolean_role_keys() {
+function ubac_roles_get_boolean_role_keys() {
 	return array(
 		'hide_adminbar_full',
 		'show_logout_menu',
@@ -48,26 +48,26 @@ function dahu_role_manager_get_boolean_role_keys() {
  *
  * @return void
  */
-function dahu_role_manager_export_csv() {
+function ubac_roles_export_csv() {
 
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_die( esc_html__( 'You are not allowed to export these settings.', 'ubac-roles' ) );
 	}
 
-	check_admin_referer( 'dahu_role_manager_export_csv' );
+	check_admin_referer( 'ubac_roles_export_csv' );
 
-	$settings = get_option( DAHU_ROLE_MANAGER_OPTION, array() );
+	$settings = get_option( UBAC_ROLES_OPTION, array() );
 
 	nocache_headers();
 	header( 'Content-Type: text/csv; charset=utf-8' );
-	header( 'Content-Disposition: attachment; filename=dahu-role-manager-export-' . gmdate( 'Y-m-d' ) . '.csv' );
+	header( 'Content-Disposition: attachment; filename=ubac-roles-export-' . gmdate( 'Y-m-d' ) . '.csv' );
 
 	/* fopen() ON php://output, NOT WP_Filesystem. The file is never written to
 	 * disk: the CSV is streamed straight to the browser as the download body.
 	 * WP_Filesystem has no stream to hand back, so there is nothing it could do
 	 * here, and buffering the whole export in memory first would be worse. */
 	$out = fopen( 'php://output', 'w' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- php://output is the download body, not a file on disk.
-	dahu_role_manager_write_csv_settings( $out, $settings );
+	ubac_roles_write_csv_settings( $out, $settings );
 	fclose( $out ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- closes the php://output stream opened above.
 	exit;
 }
@@ -82,7 +82,7 @@ function dahu_role_manager_export_csv() {
  * @param mixed    $settings The stored settings.
  * @return void
  */
-function dahu_role_manager_write_csv_settings( $out, $settings ) {
+function ubac_roles_write_csv_settings( $out, $settings ) {
 
 	fputcsv( $out, array( 'role', 'type', 'value' ) );
 
@@ -117,7 +117,7 @@ function dahu_role_manager_write_csv_settings( $out, $settings ) {
 
 		// Boolean options go out as `flag` rows carrying the key name, the
 		// landing page as a `start_menu` row.
-		foreach ( dahu_role_manager_get_boolean_role_keys() as $key ) {
+		foreach ( ubac_roles_get_boolean_role_keys() as $key ) {
 			if ( ! empty( $role_data[ $key ] ) ) {
 				fputcsv( $out, array( $role_slug, 'flag', $key ) );
 			}
@@ -128,7 +128,7 @@ function dahu_role_manager_write_csv_settings( $out, $settings ) {
 		}
 	}
 }
-add_action( 'admin_post_dahu_role_manager_export_csv', 'dahu_role_manager_export_csv' );
+add_action( 'admin_post_ubac_roles_export_csv', 'ubac_roles_export_csv' );
 
 /**
  * Parse an open CSV handle into a settings array.
@@ -140,7 +140,7 @@ add_action( 'admin_post_dahu_role_manager_export_csv', 'dahu_role_manager_export
  * @param resource $handle An open, readable handle positioned at the start.
  * @return array<string,array<string,mixed>>|null
  */
-function dahu_role_manager_parse_csv_settings( $handle ) {
+function ubac_roles_parse_csv_settings( $handle ) {
 
 	$header          = fgetcsv( $handle );
 	$expected_header = array( 'role', 'type', 'value' );
@@ -159,7 +159,7 @@ function dahu_role_manager_parse_csv_settings( $handle ) {
 		'hide_class'  => 'hide_classes',
 	);
 
-	$sm_excluded_roles = dahu_role_manager_get_sm_excluded_roles();
+	$sm_excluded_roles = ubac_roles_get_sm_excluded_roles();
 	$valid_role_slugs  = array_keys( wp_roles()->roles );
 
 	$empty_role_data = array(
@@ -226,7 +226,7 @@ function dahu_role_manager_parse_csv_settings( $handle ) {
 			}
 
 			if ( 'flag' === $type ) {
-				if ( in_array( $value, dahu_role_manager_get_boolean_role_keys(), true ) ) {
+				if ( in_array( $value, ubac_roles_get_boolean_role_keys(), true ) ) {
 					$new_settings[ $role_slug ][ $value ] = true;
 				}
 			} else {
@@ -255,7 +255,7 @@ function dahu_role_manager_parse_csv_settings( $handle ) {
 			// carrying the row must itself be allowed to manage accounts.
 			if ( in_array( $value, $sm_excluded_roles, true )
 				|| ! in_array( $value, $valid_role_slugs, true )
-				|| ! dahu_role_manager_role_can_manage_accounts( $role_slug ) ) {
+				|| ! ubac_roles_role_can_manage_accounts( $role_slug ) ) {
 				continue;
 			}
 		}
@@ -292,23 +292,23 @@ function dahu_role_manager_parse_csv_settings( $handle ) {
  *
  * @return void
  */
-function dahu_role_manager_import_csv() {
+function ubac_roles_import_csv() {
 
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_die( esc_html__( 'You are not allowed to import these settings.', 'ubac-roles' ) );
 	}
 
-	check_admin_referer( 'dahu_role_manager_import_csv' );
+	check_admin_referer( 'ubac_roles_import_csv' );
 
 	// Back to the tab the request came from.
-	$redirect_base = admin_url( 'options-general.php?page=' . DAHU_ROLE_MANAGER_SLUG . '&tab=csv' );
+	$redirect_base = admin_url( 'options-general.php?page=' . UBAC_ROLES_SLUG . '&tab=csv' );
 
-	$upload = isset( $_FILES['dahu_role_manager_csv_file'] ) ? $_FILES['dahu_role_manager_csv_file'] : array();
+	$upload = isset( $_FILES['ubac_roles_csv_file'] ) ? $_FILES['ubac_roles_csv_file'] : array();
 
 	if ( empty( $upload['tmp_name'] )
 		|| ! is_uploaded_file( sanitize_text_field( wp_unslash( $upload['tmp_name'] ) ) )
 		|| ( isset( $upload['error'] ) && UPLOAD_ERR_OK !== (int) $upload['error'] ) ) {
-		wp_safe_redirect( add_query_arg( 'dahu_role_manager_import', 'error_no_file', $redirect_base ) );
+		wp_safe_redirect( add_query_arg( 'ubac_roles_import', 'error_no_file', $redirect_base ) );
 		exit;
 	}
 
@@ -319,21 +319,21 @@ function dahu_role_manager_import_csv() {
 	$handle   = fopen( $tmp_file, 'r' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- fgetcsv() needs a handle; WP_Filesystem would load the whole upload into memory.
 
 	if ( ! $handle ) {
-		wp_safe_redirect( add_query_arg( 'dahu_role_manager_import', 'error_read', $redirect_base ) );
+		wp_safe_redirect( add_query_arg( 'ubac_roles_import', 'error_read', $redirect_base ) );
 		exit;
 	}
 
-	$parsed = dahu_role_manager_parse_csv_settings( $handle );
+	$parsed = ubac_roles_parse_csv_settings( $handle );
 	fclose( $handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- closes the import handle opened above.
 
 	if ( null === $parsed ) {
-		wp_safe_redirect( add_query_arg( 'dahu_role_manager_import', 'error_format', $redirect_base ) );
+		wp_safe_redirect( add_query_arg( 'ubac_roles_import', 'error_format', $redirect_base ) );
 		exit;
 	}
 
-	update_option( DAHU_ROLE_MANAGER_OPTION, $parsed );
+	update_option( UBAC_ROLES_OPTION, $parsed );
 
-	wp_safe_redirect( add_query_arg( 'dahu_role_manager_import', 'success', $redirect_base ) );
+	wp_safe_redirect( add_query_arg( 'ubac_roles_import', 'success', $redirect_base ) );
 	exit;
 }
-add_action( 'admin_post_dahu_role_manager_import_csv', 'dahu_role_manager_import_csv' );
+add_action( 'admin_post_ubac_roles_import_csv', 'ubac_roles_import_csv' );

@@ -1,4 +1,4 @@
-# Dahu Role Manager
+# Ubac Role Manager
 
 Façonne l'administration de WordPress pour chaque rôle : quels menus et quels
 éléments de la barre d'administration il voit, quels comptes il peut modifier,
@@ -55,10 +55,10 @@ Copiez le dossier dans `wp-content/plugins/`, activez, et ouvrez
 
 | Hook | Type | Ce qu'il fait |
 |---|---|---|
-| `dahu_role_manager_extra_role_caps` | filtre | Capacités à ajouter, par slug de rôle. Vide par défaut ; n'ajoute jamais que. |
-| `dahu_role_manager_excluded_editable_roles` | filtre | Rôles qu'aucun autre rôle ne peut gérer. `administrator` et `shop_manager` par défaut. |
-| `dahu_role_manager_roles_barred_from_managing_accounts` | filtre | Rôles à qui on ne peut jamais donner un périmètre de comptes. |
-| `dahu_role_manager_hidden_adminbar_css` | filtre | Le CSS appliqué quand la barre d'administration est masquée entièrement, sous la forme sélecteur => déclarations. |
+| `ubac_roles_extra_role_caps` | filtre | Capacités à ajouter, par slug de rôle. Vide par défaut ; n'ajoute jamais que. |
+| `ubac_roles_excluded_editable_roles` | filtre | Rôles qu'aucun autre rôle ne peut gérer. `administrator` et `shop_manager` par défaut. |
+| `ubac_roles_roles_barred_from_managing_accounts` | filtre | Rôles à qui on ne peut jamais donner un périmètre de comptes. |
+| `ubac_roles_hidden_adminbar_css` | filtre | Le CSS appliqué quand la barre d'administration est masquée entièrement, sous la forme sélecteur => déclarations. |
 
 ## Désinstallation
 

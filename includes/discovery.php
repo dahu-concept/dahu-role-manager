@@ -6,7 +6,7 @@
  * the live install, never from a hardcoded list: whatever plugins are active
  * on the site shows up by itself.
  *
- * @package DahuRoleManager
+ * @package UbacRoles
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
  * empty by default and lets the site owner name the capabilities to add:
  *
  *     add_filter(
- *         'dahu_role_manager_extra_role_caps',
+ *         'ubac_roles_extra_role_caps',
  *         function ( $caps ) {
  *             $caps['editor'] = array( 'some_plugin_manage_items' );
  *             return $caps;
@@ -38,14 +38,14 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return void
  */
-function dahu_role_manager_grant_extra_caps() {
+function ubac_roles_grant_extra_caps() {
 
 	/**
 	 * Filters the capabilities to add, keyed by role slug.
 	 *
 	 * @param array<string,string[]> $caps Role slug => list of capabilities.
 	 */
-	$extra = apply_filters( 'dahu_role_manager_extra_role_caps', array() );
+	$extra = apply_filters( 'ubac_roles_extra_role_caps', array() );
 
 	if ( empty( $extra ) || ! is_array( $extra ) ) {
 		return;
@@ -79,12 +79,12 @@ function dahu_role_manager_grant_extra_caps() {
 
 	// Second pass, against the database: a capability already granted there
 	// means the copy in memory is the thing that is wrong.
-	$db_roles = dahu_role_manager_read_roles_db();
+	$db_roles = ubac_roles_read_roles_db();
 	$missing  = array();
 
 	foreach ( $candidates as $role_slug => $caps ) {
 		foreach ( $caps as $cap ) {
-			if ( ! dahu_role_manager_db_role_has_cap( $db_roles, $role_slug, $cap ) ) {
+			if ( ! ubac_roles_db_role_has_cap( $db_roles, $role_slug, $cap ) ) {
 				$missing[ $role_slug ][] = $cap;
 			}
 		}
@@ -92,8 +92,8 @@ function dahu_role_manager_grant_extra_caps() {
 
 	if ( empty( $missing ) ) {
 		// The database is already right. Refresh the copy, write nothing.
-		dahu_role_manager_purge_roles_cache();
-		dahu_role_manager_log_role_action(
+		ubac_roles_purge_roles_cache();
+		ubac_roles_log_role_action(
 			'extra_caps_skip',
 			implode( ',', array_keys( $candidates ) ),
 			'already granted in database, nothing written'
@@ -111,8 +111,8 @@ function dahu_role_manager_grant_extra_caps() {
 	 * it. Calling the reload and ignoring its answer cancelled the guard on
 	 * precisely the hottest path, which is worse than not having it.
 	 */
-	if ( ! dahu_role_manager_reload_roles_from_db() ) {
-		dahu_role_manager_log_role_action(
+	if ( ! ubac_roles_reload_roles_from_db() ) {
+		ubac_roles_log_role_action(
 			'extra_caps_refused',
 			implode( ',', array_keys( $missing ) ),
 			'roles option unreadable in database, nothing written'
@@ -134,7 +134,7 @@ function dahu_role_manager_grant_extra_caps() {
 		}
 	}
 }
-add_action( 'init', 'dahu_role_manager_grant_extra_caps' );
+add_action( 'init', 'ubac_roles_grant_extra_caps' );
 
 /**
  * Build the map of admin menus and their submenus.
@@ -144,7 +144,7 @@ add_action( 'init', 'dahu_role_manager_grant_extra_caps' );
  *
  * @return array<string,array{label:string,submenus:array<string,string>}>
  */
-function dahu_role_manager_get_menu_map() {
+function ubac_roles_get_menu_map() {
 	global $menu, $submenu;
 
 	$map = array();
@@ -213,7 +213,7 @@ function dahu_role_manager_get_menu_map() {
  *
  * @return array<string,array{label:string,parent:string}>
  */
-function dahu_role_manager_get_adminbar_map() {
+function ubac_roles_get_adminbar_map() {
 
 	if ( ! class_exists( 'WP_Admin_Bar' ) ) {
 		require_once ABSPATH . WPINC . '/class-wp-admin-bar.php';
@@ -254,7 +254,7 @@ function dahu_role_manager_get_adminbar_map() {
 		if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Deliberate, gated on WP_DEBUG_LOG.
 			error_log(
-				'[Dahu Role Manager] an admin_bar_menu callback threw while listing nodes: '
+				'[Ubac Role Manager] an admin_bar_menu callback threw while listing nodes: '
 				. $e->getMessage()
 			);
 		}
