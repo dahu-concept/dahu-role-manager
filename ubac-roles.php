@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Ubac Role Manager
  * Description:       Shapes the admin for each role: which menus, submenus and admin-bar items they see, which accounts they may edit, where they land on login. Duplicate, rename and delete roles, and export the whole thing as CSV.
- * Version:           3.2.3
+ * Version:           3.2.4
  * Author:            Hugo Vial-Jaime
  * Author URI:        https://dahu-concept.fr
  * License:           MIT
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'UBAC_ROLES_VERSION', '3.2.3' );
+define( 'UBAC_ROLES_VERSION', '3.2.4' );
 define( 'UBAC_ROLES_FILE', __FILE__ );
 define( 'UBAC_ROLES_PATH', plugin_dir_path( __FILE__ ) );
 define( 'UBAC_ROLES_URL', plugin_dir_url( __FILE__ ) );

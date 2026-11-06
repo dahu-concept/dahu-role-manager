@@ -4,13 +4,32 @@ Tags: role editor, menu visibility, user roles, capabilities, admin menu
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.2.3
+Stable tag: 3.2.4
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
 Shape the admin for each role: which menus they see, which accounts they may edit, where they land on login. Duplicate, rename and delete roles.
 
 == Description ==
+
+= Why another role plugin? =
+
+Because this is not a capability editor, and the directory already has plenty
+of those. It does not ask you to understand capabilities at all:
+
+* **What it offers to hide is discovered from your own install at runtime.**
+  Whatever plugins you run, their menus and admin-bar items appear in the list
+  by themselves. There is no hardcoded list to wait on, and nothing to update
+  when you add a plugin.
+* **It scopes which accounts a role may create and delete.** That is what lets
+  a site run several manager roles side by side, each with its own perimeter,
+  without any of them reaching the administrators.
+* **It decides where each role lands after login**, which is the difference
+  between an admin that feels made for someone and one they have to navigate.
+
+And it says plainly what it is not: hiding a menu is cosmetic, not a security
+boundary. If you need to actually remove a permission, that is a capability
+question and this plugin will not pretend otherwise.
 
 WordPress gives every role the same admin. Ubac Role Manager lets you decide, role by role, what that admin actually looks like — without writing a line of code and without touching a single capability.
 
@@ -100,6 +119,9 @@ Capabilities are only ever added, never removed.
 
 == Changelog ==
 
+= 3.2.4 =
+* Changed: the readme now answers, in its own section, why this plugin exists alongside the role editors -- it is not a capability editor; it discovers what to hide from your own install, scopes which accounts a role may edit, and sets where each role lands after login.
+
 = 3.2.3 =
 * Changed: the compiled French catalogue now travels in the package. It was left out on the grounds that the directory serves language packs, which is true only for a copy installed from the directory and only once translations have been imported: a copy installed by hand showed English with a catalogue that was fully translated.
 * Changed: the French readme moves under docs/, so the directory's checker no longer reports an unexpected markdown file at the plugin root.
@@ -126,6 +148,9 @@ Capabilities are only ever added, never removed.
 * First public release.
 
 == Upgrade Notice ==
+
+= 3.2.4 =
+Documentation only: the readme now says what this plugin does that the role editors do not.
 
 = 3.2.3 =
 French now works on a copy installed by hand: the compiled catalogue travels in the package. The French readme moves under docs/.
