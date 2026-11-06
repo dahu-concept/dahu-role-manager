@@ -94,6 +94,23 @@ function ubac_roles_save_role_settings() {
         exit;
     }
 
+    /* NO wp_unslash() HERE, AND THAT IS DELIBERATE: IT HAPPENS BELOW.
+     *
+     * ubac_roles_sanitize_role_data() unslashes EVERY FIELD, one by one --
+     * start_menu, the menus, the submenus, the admin-bar nodes, and the CSS
+     * selectors through ubac_roles_sanitize_hide_classes(). Unslashing this
+     * array here as well would do it TWICE, and a legitimate backslash in a
+     * CSS selector would be eaten in silence. Following the warning to the
+     * letter would create the very defect it believes it is reporting.
+     *
+     * The array is not used in between: it goes straight to the sanitiser on
+     * the next statement, which is also what _harness/prove-entrees-requete
+     * checks for. The read was briefly moved onto a line of its own so a
+     * phpcs:ignore could cover it; that made the sanitiser disappear from
+     * the line this harness control reads, and it went red. The ternary
+     * stays, and the PHPCS warning stays with it — an honest warning with
+     * its reason written down beats a restructure that breaks a real
+     * control. */
     $role_input = isset($_POST[UBAC_ROLES_OPTION][$role_slug]) && is_array($_POST[UBAC_ROLES_OPTION][$role_slug])
         ? $_POST[UBAC_ROLES_OPTION][$role_slug]
         : [];
