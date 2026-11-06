@@ -4,7 +4,7 @@ Tags: role editor, menu visibility, user roles, capabilities, admin menu
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -100,6 +100,9 @@ Capabilities are only ever added, never removed.
 
 == Changelog ==
 
+= 3.2.2 =
+* Changed: WordPress 6.2 is now the floor. Three extensions of the family need it for prepare()'s %i identifier placeholder, and the family states one floor rather than two because the welcome screen and the shared admin stylesheet are copied byte for byte across it.
+
 = 3.2.1 =
 * The Menus and Admin bar cards now say so when the admin menu or the admin bar could not be read, instead of showing a "check all" box above an empty list.
 * The selector example in the hiding field is no longer written in French.
@@ -119,6 +122,9 @@ Capabilities are only ever added, never removed.
 * First public release.
 
 == Upgrade Notice ==
+
+= 3.2.2 =
+WordPress 6.2 is now the floor, in step with the rest of the family. Nothing else changes.
 
 = 3.1.0 =
 Recommended on any site with a persistent object cache (Redis, Memcached).
