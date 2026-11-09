@@ -190,9 +190,9 @@ function ubac_roles_locked_order_notice() {
 			<?php
 			printf(
 				/* translators: 1: order number, 2: the bolded order status "Completed". */
-				esc_html__( 'Order #%1$s is %2$s: its status is locked for your role and was not changed.', 'ubac-roles' ),
+				esc_html__( 'Order #%1$s is %2$s: its status is locked for your role and was not changed.', 'dahuconcept-role-manager' ),
 				esc_html( $order_id ),
-				'<strong>' . esc_html_x( 'Completed', 'Order status', 'ubac-roles' ) . '</strong>'
+				'<strong>' . esc_html_x( 'Completed', 'Order status', 'dahuconcept-role-manager' ) . '</strong>'
 			);
 			?>
 		</p>

@@ -91,7 +91,7 @@ function ubac_roles_log_role_action($action, $role_slug, $details = '') {
 
     // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Deliberate audit trail, gated on WP_DEBUG_LOG.
     error_log(sprintf(
-        '[Ubac Role Manager v%s] %s UTC | action=%s | role=%s | by=%s%s',
+        '[DahuConcept Role Manager v%s] %s UTC | action=%s | role=%s | by=%s%s',
         UBAC_ROLES_VERSION,
         gmdate('Y-m-d H:i:s'),
         $action,
@@ -130,7 +130,7 @@ function ubac_roles_manage_redirect_url($message = '', $slug = '') {
 add_action('admin_post_ubac_roles_create_role', 'ubac_roles_handle_create_role');
 function ubac_roles_handle_create_role() {
     if (!current_user_can('manage_options')) {
-        wp_die(esc_html__('You are not allowed to manage roles.', 'ubac-roles'));
+        wp_die(esc_html__('You are not allowed to manage roles.', 'dahuconcept-role-manager'));
     }
     check_admin_referer('ubac_roles_create_role');
 
@@ -226,7 +226,7 @@ function ubac_roles_handle_create_role() {
 add_action('admin_post_ubac_roles_rename_role', 'ubac_roles_handle_rename_role');
 function ubac_roles_handle_rename_role() {
     if (!current_user_can('manage_options')) {
-        wp_die(esc_html__('You are not allowed to manage roles.', 'ubac-roles'));
+        wp_die(esc_html__('You are not allowed to manage roles.', 'dahuconcept-role-manager'));
     }
     check_admin_referer('ubac_roles_rename_role');
 
@@ -287,7 +287,7 @@ function ubac_roles_handle_rename_role() {
 add_action('admin_post_ubac_roles_delete_role', 'ubac_roles_handle_delete_role');
 function ubac_roles_handle_delete_role() {
     if (!current_user_can('manage_options')) {
-        wp_die(esc_html__('You are not allowed to manage roles.', 'ubac-roles'));
+        wp_die(esc_html__('You are not allowed to manage roles.', 'dahuconcept-role-manager'));
     }
     check_admin_referer('ubac_roles_delete_role');
 
@@ -397,29 +397,29 @@ function ubac_roles_render_roles_tab_notices() {
 
     $messages = [
         /* translators: %s: role display name. */
-        'created'         => ['success', __('Role "%s" created with the source role\'s capabilities.', 'ubac-roles')],
+        'created'         => ['success', __('Role "%s" created with the source role\'s capabilities.', 'dahuconcept-role-manager')],
         /* translators: %s: role display name. */
-        'renamed'         => ['success', __('Display name of role "%s" updated.', 'ubac-roles')],
+        'renamed'         => ['success', __('Display name of role "%s" updated.', 'dahuconcept-role-manager')],
         /* translators: %s: role display name. */
-        'deleted'         => ['success', __('Role "%s" deleted.', 'ubac-roles')],
-        'error_source'    => ['error', __('Invalid source role (the Administrator role cannot be duplicated).', 'ubac-roles')],
-        'error_label'     => ['error', __('The display name is required.', 'ubac-roles')],
-        'error_slug'      => ['error', __('Invalid identifier: lowercase letters, digits and underscores only, no spaces.', 'ubac-roles')],
+        'deleted'         => ['success', __('Role "%s" deleted.', 'dahuconcept-role-manager')],
+        'error_source'    => ['error', __('Invalid source role (the Administrator role cannot be duplicated).', 'dahuconcept-role-manager')],
+        'error_label'     => ['error', __('The display name is required.', 'dahuconcept-role-manager')],
+        'error_slug'      => ['error', __('Invalid identifier: lowercase letters, digits and underscores only, no spaces.', 'dahuconcept-role-manager')],
         /* translators: %s: the identifier that was refused. */
-        'error_reserved'  => ['error', __('The identifier "%s" is reserved by WordPress and cannot be used.', 'ubac-roles')],
+        'error_reserved'  => ['error', __('The identifier "%s" is reserved by WordPress and cannot be used.', 'dahuconcept-role-manager')],
         /* translators: %s: the identifier that was refused. */
-        'error_exists'    => ['error', __('A role with the identifier "%s" already exists.', 'ubac-roles')],
+        'error_exists'    => ['error', __('A role with the identifier "%s" already exists.', 'dahuconcept-role-manager')],
         /* translators: %s: the identifier that was refused. */
-        'error_create'    => ['error', __('Creating the role "%s" failed.', 'ubac-roles')],
-        'error_protected' => ['error', __('This role is protected: it can be neither renamed nor deleted from this tab.', 'ubac-roles')],
+        'error_create'    => ['error', __('Creating the role "%s" failed.', 'dahuconcept-role-manager')],
+        'error_protected' => ['error', __('This role is protected: it can be neither renamed nor deleted from this tab.', 'dahuconcept-role-manager')],
         // Saying «  protected  » here was a lie: nothing is protected, the
         // roles could not be read. An administrator told that retries for
         // ever, because the message names a cause that is not the cause.
-        'error_unreadable' => ['error', __('Refused: the roles could not be read from the database, so nothing was written — that way no role is erased. Try again, and if it persists, have the roles option checked.', 'ubac-roles')],
+        'error_unreadable' => ['error', __('Refused: the roles could not be read from the database, so nothing was written — that way no role is erased. Try again, and if it persists, have the roles option checked.', 'dahuconcept-role-manager')],
         /* translators: %s: role display name. */
-        'error_vanished'  => ['error', __('The role "%s" is no longer in the database. The screen has been refreshed.', 'ubac-roles')],
+        'error_vanished'  => ['error', __('The role "%s" is no longer in the database. The screen has been refreshed.', 'dahuconcept-role-manager')],
         /* translators: %s: role display name. */
-        'error_has_users' => ['error', __('Deletion refused: users are still assigned to the role "%s". Reassign them first.', 'ubac-roles')],
+        'error_has_users' => ['error', __('Deletion refused: users are still assigned to the role "%s". Reassign them first.', 'dahuconcept-role-manager')],
     ];
 
     if (!isset($messages[$code])) {
@@ -448,7 +448,7 @@ function ubac_roles_render_saved_notice() {
     }
 
     $saved_messages = [
-        'role' => __('Settings saved for this role.', 'ubac-roles'),
+        'role' => __('Settings saved for this role.', 'dahuconcept-role-manager'),
     ];
 
     $saved_key = sanitize_key($_GET['ubac_roles_saved']);
@@ -470,9 +470,9 @@ function ubac_roles_render_saved_notice() {
  */
 function ubac_roles_render_tabs_nav($current_tab) {
     $tabs = [
-        'interface' => __('Role interface', 'ubac-roles'),
-        'roles'     => __('Role management', 'ubac-roles'),
-        'csv'       => __('Export / Import', 'ubac-roles'),
+        'interface' => __('Role interface', 'dahuconcept-role-manager'),
+        'roles'     => __('Role management', 'dahuconcept-role-manager'),
+        'csv'       => __('Export / Import', 'dahuconcept-role-manager'),
     ];
     ?>
     <h2 class="nav-tab-wrapper ubac-rm-tabs">
@@ -507,10 +507,10 @@ function ubac_roles_render_csv_import_notices() {
 
     $status = sanitize_key($_GET['ubac_roles_import']);
     $messages = [
-        'success'       => ['success', __('Import complete. The settings were replaced by the contents of the CSV file.', 'ubac-roles')],
-        'error_no_file' => ['error', __('No file was received.', 'ubac-roles')],
-        'error_read'    => ['error', __('That file could not be read.', 'ubac-roles')],
-        'error_format'  => ['error', __('Invalid file format. The expected header is: role,type,value', 'ubac-roles')],
+        'success'       => ['success', __('Import complete. The settings were replaced by the contents of the CSV file.', 'dahuconcept-role-manager')],
+        'error_no_file' => ['error', __('No file was received.', 'dahuconcept-role-manager')],
+        'error_read'    => ['error', __('That file could not be read.', 'dahuconcept-role-manager')],
+        'error_format'  => ['error', __('Invalid file format. The expected header is: role,type,value', 'dahuconcept-role-manager')],
     ];
 
     if (!isset($messages[$status])) {
@@ -533,33 +533,33 @@ function ubac_roles_render_csv_import_notices() {
 function ubac_roles_render_csv_tab() {
     ?>
     <div class="ubac-ui-card">
-    <div class="ubac-ui-card__head"><h2 class="ubac-ui-card__title"><?php esc_html_e('Export / import the settings', 'ubac-roles'); ?></h2></div>
+    <div class="ubac-ui-card__head"><h2 class="ubac-ui-card__title"><?php esc_html_e('Export / import the settings', 'dahuconcept-role-manager'); ?></h2></div>
     <p>
         <?php
         printf(
             /* translators: %s: the CSV column header role,type,value. */
-            esc_html__('The CSV file (%s) covers the whole configuration: menus, submenus, admin bar, the per-role options, the landing page, the hidden CSS selectors and the editable accounts.', 'ubac-roles'),
+            esc_html__('The CSV file (%s) covers the whole configuration: menus, submenus, admin bar, the per-role options, the landing page, the hidden CSS selectors and the editable accounts.', 'dahuconcept-role-manager'),
             '<code>role,type,value</code>'
         );
         ?>
     </p>
     <div class="ubac-rm-tools">
         <div>
-            <h3><?php esc_html_e('Export the settings', 'ubac-roles'); ?></h3>
+            <h3><?php esc_html_e('Export the settings', 'dahuconcept-role-manager'); ?></h3>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <input type="hidden" name="action" value="ubac_roles_export_csv" />
                 <?php wp_nonce_field('ubac_roles_export_csv'); ?>
-                <?php submit_button(__('Download the CSV', 'ubac-roles'), 'secondary', 'submit', false); ?>
+                <?php submit_button(__('Download the CSV', 'dahuconcept-role-manager'), 'secondary', 'submit', false); ?>
             </form>
         </div>
         <div>
-            <h3><?php esc_html_e('Import settings', 'ubac-roles'); ?></h3>
-            <p class="ubac-rm-warning"><?php esc_html_e('⚠️ An import completely replaces the current settings of every role.', 'ubac-roles'); ?></p>
+            <h3><?php esc_html_e('Import settings', 'dahuconcept-role-manager'); ?></h3>
+            <p class="ubac-rm-warning"><?php esc_html_e('⚠️ An import completely replaces the current settings of every role.', 'dahuconcept-role-manager'); ?></p>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="ubac_roles_import_csv" />
                 <?php wp_nonce_field('ubac_roles_import_csv'); ?>
                 <input type="file" name="ubac_roles_csv_file" accept=".csv" required />
-                <?php submit_button(__('Import the CSV', 'ubac-roles'), 'secondary', 'submit', false); ?>
+                <?php submit_button(__('Import the CSV', 'dahuconcept-role-manager'), 'secondary', 'submit', false); ?>
             </form>
         </div>
     </div>
@@ -578,13 +578,13 @@ function ubac_roles_render_roles_tab() {
     $reserved = ubac_roles_get_reserved_role_slugs();
     ?>
     <div class="ubac-ui-card">
-    <div class="ubac-ui-card__head"><h2 class="ubac-ui-card__title"><?php esc_html_e('Create a role by duplication', 'ubac-roles'); ?></h2></div>
+    <div class="ubac-ui-card__head"><h2 class="ubac-ui-card__title"><?php esc_html_e('Create a role by duplication', 'dahuconcept-role-manager'); ?></h2></div>
     <p>
         <?php
         printf(
             /* translators: %s: the bolded word "exactly". */
-            esc_html__('The new role receives %s the capabilities of the source role, with nothing added and nothing taken away. Adjust them afterwards with whatever role editor you already use.', 'ubac-roles'),
-            '<strong>' . esc_html__('exactly', 'ubac-roles') . '</strong>'
+            esc_html__('The new role receives %s the capabilities of the source role, with nothing added and nothing taken away. Adjust them afterwards with whatever role editor you already use.', 'dahuconcept-role-manager'),
+            '<strong>' . esc_html__('exactly', 'dahuconcept-role-manager') . '</strong>'
         );
         ?>
     </p>
@@ -592,7 +592,7 @@ function ubac_roles_render_roles_tab() {
         <?php
         printf(
             /* translators: %s: the bolded name of the Administrator role. */
-            esc_html__('The %s role is deliberately not offered as a source: a role copied from it would hold every capability on the site with nothing to stop it.', 'ubac-roles'),
+            esc_html__('The %s role is deliberately not offered as a source: a role copied from it would hold every capability on the site with nothing to stop it.', 'dahuconcept-role-manager'),
             '<strong>' . esc_html(translate_user_role('Administrator')) . '</strong>'
         );
         ?>
@@ -603,7 +603,7 @@ function ubac_roles_render_roles_tab() {
         <?php wp_nonce_field('ubac_roles_create_role'); ?>
         <table class="form-table">
             <tr>
-                <th scope="row"><label for="ubac_source_role"><?php esc_html_e('Source role', 'ubac-roles'); ?></label></th>
+                <th scope="row"><label for="ubac_source_role"><?php esc_html_e('Source role', 'dahuconcept-role-manager'); ?></label></th>
                 <td>
                     <select name="ubac_source_role" id="ubac_source_role" required>
                         <?php foreach ($all_roles as $slug => $info):
@@ -618,7 +618,7 @@ function ubac_roles_render_roles_tab() {
                 </td>
             </tr>
             <tr>
-                <th scope="row"><label for="ubac_new_role_label"><?php esc_html_e('Display name', 'ubac-roles'); ?></label></th>
+                <th scope="row"><label for="ubac_new_role_label"><?php esc_html_e('Display name', 'dahuconcept-role-manager'); ?></label></th>
                 <td>
                     <input type="text" name="ubac_new_role_label" id="ubac_new_role_label" class="regular-text" required
                            oninput="ubacRoleManagerSlugify(this.value)" />
@@ -626,15 +626,15 @@ function ubac_roles_render_roles_tab() {
                         <?php
                         printf(
                             /* translators: %s: an example role display name. */
-                            esc_html__('The label shown throughout the admin (for example %s).', 'ubac-roles'),
-                            '<code>' . esc_html__('Warehouse staff', 'ubac-roles') . '</code>'
+                            esc_html__('The label shown throughout the admin (for example %s).', 'dahuconcept-role-manager'),
+                            '<code>' . esc_html__('Warehouse staff', 'dahuconcept-role-manager') . '</code>'
                         );
                         ?>
                     </p>
                 </td>
             </tr>
             <tr>
-                <th scope="row"><label for="ubac_new_role_slug"><?php esc_html_e('Identifier', 'ubac-roles'); ?></label></th>
+                <th scope="row"><label for="ubac_new_role_slug"><?php esc_html_e('Identifier', 'dahuconcept-role-manager'); ?></label></th>
                 <td>
                     <input type="text" name="ubac_new_role_slug" id="ubac_new_role_slug" class="regular-text"
                            pattern="[a-z0-9_]+" required />
@@ -642,26 +642,26 @@ function ubac_roles_render_roles_tab() {
                         <?php
                         printf(
                             /* translators: %s: the bolded warning "Final once the role is created." */
-                            esc_html__('Generated from the display name, and editable by hand. Lowercase letters, digits and underscores only, no spaces. %s', 'ubac-roles'),
-                            '<strong>' . esc_html__('Final once the role is created.', 'ubac-roles') . '</strong>'
+                            esc_html__('Generated from the display name, and editable by hand. Lowercase letters, digits and underscores only, no spaces. %s', 'dahuconcept-role-manager'),
+                            '<strong>' . esc_html__('Final once the role is created.', 'dahuconcept-role-manager') . '</strong>'
                         );
                         ?>
                     </p>
                 </td>
             </tr>
         </table>
-        <?php submit_button(__('Create the role', 'ubac-roles')); ?>
+        <?php submit_button(__('Create the role', 'dahuconcept-role-manager')); ?>
     </form>
     </div>
 
     <div class="ubac-ui-card">
-    <div class="ubac-ui-card__head"><h2 class="ubac-ui-card__title"><?php esc_html_e('Existing roles', 'ubac-roles'); ?></h2></div>
+    <div class="ubac-ui-card__head"><h2 class="ubac-ui-card__title"><?php esc_html_e('Existing roles', 'dahuconcept-role-manager'); ?></h2></div>
     <p class="ubac-rm-hint">
         <?php
         printf(
             /* translators: %s: the bolded words "display name". */
-            esc_html__('Only the %s can be changed after creation: the identifier is final, because WordPress offers no way to change it without recreating the role and reassigning all of its users. A role can only be deleted once no user holds it.', 'ubac-roles'),
-            '<strong>' . esc_html__('display name', 'ubac-roles') . '</strong>'
+            esc_html__('Only the %s can be changed after creation: the identifier is final, because WordPress offers no way to change it without recreating the role and reassigning all of its users. A role can only be deleted once no user holds it.', 'dahuconcept-role-manager'),
+            '<strong>' . esc_html__('display name', 'dahuconcept-role-manager') . '</strong>'
         );
         ?>
     </p>
@@ -669,11 +669,11 @@ function ubac_roles_render_roles_tab() {
     <table class="widefat striped ubac-rm-table ubac-rm-table--wide">
         <thead>
             <tr>
-                <th><?php esc_html_e('Display name', 'ubac-roles'); ?></th>
-                <th class="ubac-rm-col-id"><?php esc_html_e('Identifier', 'ubac-roles'); ?></th>
-                <th class="ubac-rm-col-count"><?php esc_html_e('Users', 'ubac-roles'); ?></th>
-                <th class="ubac-rm-col-count"><?php esc_html_e('Capabilities', 'ubac-roles'); ?></th>
-                <th class="ubac-rm-col-actions"><?php esc_html_e('Actions', 'ubac-roles'); ?></th>
+                <th><?php esc_html_e('Display name', 'dahuconcept-role-manager'); ?></th>
+                <th class="ubac-rm-col-id"><?php esc_html_e('Identifier', 'dahuconcept-role-manager'); ?></th>
+                <th class="ubac-rm-col-count"><?php esc_html_e('Users', 'dahuconcept-role-manager'); ?></th>
+                <th class="ubac-rm-col-count"><?php esc_html_e('Capabilities', 'dahuconcept-role-manager'); ?></th>
+                <th class="ubac-rm-col-actions"><?php esc_html_e('Actions', 'dahuconcept-role-manager'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -692,8 +692,8 @@ function ubac_roles_render_roles_tab() {
                             <em class="ubac-rm-hint">
                                 <?php
                                 echo in_array($slug, $reserved, true)
-                                    ? esc_html__('Protected role (WordPress built-in)', 'ubac-roles')
-                                    : esc_html__('Protected role', 'ubac-roles');
+                                    ? esc_html__('Protected role (WordPress built-in)', 'dahuconcept-role-manager')
+                                    : esc_html__('Protected role', 'dahuconcept-role-manager');
                                 ?>
                             </em>
                         <?php else: ?>
@@ -702,7 +702,7 @@ function ubac_roles_render_roles_tab() {
                                 <input type="hidden" name="ubac_role_slug" value="<?php echo esc_attr($slug); ?>" />
                                 <?php wp_nonce_field('ubac_roles_rename_role'); ?>
                                 <input type="text" name="ubac_role_label" value="<?php echo esc_attr(translate_user_role($info['name'])); ?>" required class="ubac-rm-rename-input" />
-                                <button type="submit" class="ubac-ui-btn"><?php esc_html_e('Rename', 'ubac-roles'); ?></button>
+                                <button type="submit" class="ubac-ui-btn"><?php esc_html_e('Rename', 'dahuconcept-role-manager'); ?></button>
                             </form>
                             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="ubac-rm-inline-form--bare"
                                   onsubmit="return ubacRoleManagerConfirmDelete(this);">
@@ -711,7 +711,7 @@ function ubac_roles_render_roles_tab() {
                                 <input type="hidden" name="ubac_role_users" value="<?php echo esc_attr($user_count); ?>" />
                                 <input type="hidden" name="ubac_role_name" value="<?php echo esc_attr(translate_user_role($info['name'])); ?>" />
                                 <?php wp_nonce_field('ubac_roles_delete_role'); ?>
-                                <button type="submit" class="ubac-ui-btn ubac-ui-btn--warn" <?php disabled($user_count > 0); ?>><?php esc_html_e('Delete', 'ubac-roles'); ?></button>
+                                <button type="submit" class="ubac-ui-btn ubac-ui-btn--warn" <?php disabled($user_count > 0); ?>><?php esc_html_e('Delete', 'dahuconcept-role-manager'); ?></button>
                             </form>
                             <?php if ($user_count > 0): ?>
                                 <p class="ubac-rm-danger">
@@ -723,7 +723,7 @@ function ubac_roles_render_roles_tab() {
                                                 '%s user is assigned to this role: reassign them before it can be deleted.',
                                                 '%s users are assigned to this role: reassign them before it can be deleted.',
                                                 $user_count,
-                                                'ubac-roles'
+                                                'dahuconcept-role-manager'
                                             )
                                         ),
                                         esc_html( number_format_i18n( $user_count ) )
@@ -742,10 +742,10 @@ function ubac_roles_render_roles_tab() {
     <script>
     var ubacRoleManagerI18n = <?php echo wp_json_encode(array(
         /* translators: 1: role display name, 2: number of users still assigned. */
-        'stillAssigned' => __('Cannot delete "%1$s": %2$s user(s) are still assigned to it. Reassign them first.', 'ubac-roles'),
+        'stillAssigned' => __('Cannot delete "%1$s": %2$s user(s) are still assigned to it. Reassign them first.', 'dahuconcept-role-manager'),
         /* translators: 1: role display name, 2: role identifier. */
-        'confirmDelete' => __('Permanently delete the role "%1$s" (%2$s)?', 'ubac-roles'),
-        'confirmDetail' => __('No user is assigned to it. This cannot be undone.', 'ubac-roles'),
+        'confirmDelete' => __('Permanently delete the role "%1$s" (%2$s)?', 'dahuconcept-role-manager'),
+        'confirmDetail' => __('No user is assigned to it. This cannot be undone.', 'dahuconcept-role-manager'),
     )); ?>;
     function ubacRoleManagerSlugify(value) {
         var field = document.getElementById('ubac_new_role_slug');

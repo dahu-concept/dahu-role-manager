@@ -1,4 +1,4 @@
-# Ubac Role Manager
+# DahuConcept Role Manager
 
 Façonne l'administration de WordPress pour chaque rôle : quels menus et quels
 éléments de la barre d'administration il voit, quels comptes il peut modifier,

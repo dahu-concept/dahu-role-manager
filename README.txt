@@ -1,4 +1,4 @@
-=== Ubac Role Manager ===
+=== DahuConcept Role Manager ===
 Contributors: dahuconcept
 Tags: role editor, menu visibility, user roles, capabilities, admin menu
 Requires at least: 6.2
@@ -31,7 +31,7 @@ And it says plainly what it is not: hiding a menu is cosmetic, not a security
 boundary. If you need to actually remove a permission, that is a capability
 question and this plugin will not pretend otherwise.
 
-WordPress gives every role the same admin. Ubac Role Manager lets you decide, role by role, what that admin actually looks like — without writing a line of code and without touching a single capability.
+WordPress gives every role the same admin. DahuConcept Role Manager lets you decide, role by role, what that admin actually looks like — without writing a line of code and without touching a single capability.
 
 Everything it offers to hide is discovered from your own install at runtime. Whatever plugins you run, their menus and admin-bar items show up in the list by themselves; there is no hardcoded list to wait on.
 
@@ -66,7 +66,7 @@ The administrator is treated with particular care. Menus and submenus can never 
 1. Upload the `ubac-roles` folder to `wp-content/plugins/`, or install the
    zip from Plugins > Add New.
 2. Activate the plugin.
-3. Open **Settings > Ubac Role Manager**.
+3. Open **Settings > DahuConcept Role Manager**.
 
 Pick a role in the selector at the top, tick what that role should not see, and
 save. Nothing changes for any role until you configure it: a fresh install is a

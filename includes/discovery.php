@@ -255,7 +255,7 @@ function ubac_roles_get_adminbar_map() {
 		if ( defined( 'WP_DEBUG_LOG' ) && WP_DEBUG_LOG ) {
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Deliberate, gated on WP_DEBUG_LOG.
 			error_log(
-				'[Ubac Role Manager] an admin_bar_menu callback threw while listing nodes: '
+				'[DahuConcept Role Manager] an admin_bar_menu callback threw while listing nodes: '
 				. $e->getMessage()
 			);
 		}

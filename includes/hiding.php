@@ -153,7 +153,7 @@ add_action( 'admin_head', 'ubac_roles_print_css_hidden_submenus' );
  *
  * The admin-bar section IS available for the administrator role, unlike the
  * menu sections: hiding the admin bar takes no capability away and stays
- * reversible, because the admin sidebar is untouched, so Settings > Ubac Role
+ * reversible, because the admin sidebar is untouched, so Settings > DahuConcept Role Manager
  * Manager remains reachable to switch it back off. Hiding sidebar menus could
  * hide that settings page itself, which is why those stay closed to the
  * administrator.
@@ -409,7 +409,7 @@ function ubac_roles_add_logout_menu() {
 	global $menu;
 
 	$menu[99999] = array(
-		__( 'Log out', 'ubac-roles' ),
+		__( 'Log out', 'dahuconcept-role-manager' ),
 		'read',
 		wp_logout_url(),
 		'',

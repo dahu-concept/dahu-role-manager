@@ -1,4 +1,4 @@
-# Ubac Role Manager
+# DahuConcept Role Manager
 
 Shape the WordPress admin for each role: which menus and admin-bar items they
 see, which accounts they may edit, where they land on login. Duplicate, rename
@@ -44,7 +44,7 @@ completed-order lock — are checked server-side.
 ## Installation
 
 Copy the folder into `wp-content/plugins/`, activate, and open
-**Settings → Ubac Role Manager**.
+**Settings → DahuConcept Role Manager**.
 
 ## Hooks
 
