@@ -118,7 +118,7 @@ require_once UBAC_ROLES_PATH . 'includes/ubac-welcome.php';
 register_activation_hook(
 	__FILE__,
 	static function () {
-		Ubac_Welcome::mark_activated( 'ubac-roles' );
+		Ubac_Welcome::mark_activated( 'dahuconcept-role-manager' );
 	}
 );
 
@@ -127,12 +127,12 @@ add_action(
 	static function () {
 		Ubac_Welcome::register(
 			array(
-				'slug'       => 'ubac-roles',
+				'slug'       => 'dahuconcept-role-manager',
 				'name'       => __( 'Role manager', 'dahuconcept-role-manager' ),
 				'tagline'    => __( 'Who can do what, and what changed since last time.', 'dahuconcept-role-manager' ),
 				'file'       => UBAC_ROLES_FILE,
 				'version'    => UBAC_ROLES_VERSION,
-				'textdomain' => 'ubac-roles',
+				'textdomain' => 'dahuconcept-role-manager',
 				'mark'       => array(
 					'view'  => '0 0 112 112',
 					'paths' => array(
