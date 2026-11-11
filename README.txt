@@ -1,6 +1,6 @@
 === DahuConcept Role Manager ===
 Contributors: dahuconcept
-Tags: role editor, menu visibility, user roles, capabilities, admin menu
+Tags: menu visibility, admin menu, user roles, role editor, capabilities
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
